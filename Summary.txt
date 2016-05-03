@@ -1,0 +1,13 @@
+Ejercicio 10:
+Consideremos el siguiente problema generalizado de los robots estibadores. En un muelle hay diversas localizaciones
+adyacentes. En algunas de estas localizaciones se situan pilas de contenedores. Tambien hay gruas
+que pueden ser utilizadas para coger o soltar contenedores de un conjunto de localizaciones que se encuentran
+en su radio de operacion. Para todas las localizaciones hay alguna grua que se puede utilizar. En el muelle hay
+varios robots que se pueden mover de una localizacion a otra adyacente, siempre que ambas esten libres. Los
+robots pueden transportar un unico contenedor cada vez, que cargan y descargan desde cualquier localizacion
+adyacente a otra con una pila, usando una grua de las disponibles para la localizacion de la pila. Las operaciones
+tpicas en el muelle consisten en movimientos de los robots de una localizacion a otra adyacente; y operaciones
+de las gruas de carga y descarga de contenedores en los robots o en las localizaciones.
+Describir esta situacion como un problema de planicacion mediante el formalismo de variables de estados
+especicando los smbolos de objeto, las variables de estados, las relaciones rgidas (si las hubiera) y los
+operadores.

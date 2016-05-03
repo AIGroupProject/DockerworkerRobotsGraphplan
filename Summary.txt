@@ -11,3 +11,23 @@ de las gruas de carga y descarga de contenedores en los robots o en las localiza
 Describir esta situacion como un problema de planicacion mediante el formalismo de variables de estados
 especicando los smbolos de objeto, las variables de estados, las relaciones rgidas (si las hubiera) y los
 operadores.
+
+
+Símbolos de objetos
+    Localizaciones U Pilas U Robots U Gruas U {libre}
+
+Relaciones Rígidas
+    adyacente(localización_i, localización_j) i!=j
+
+Variables de Estado
+
+Operadores
+
+    Movimiento de robots de una localización_i a localización_j
+        siempre que adyacente(localización_i,localización_j)
+
+    Grua carga robot
+    Grua descarga robot
+
+    Grua carga en localización_i
+    Grua descarga en localización_j

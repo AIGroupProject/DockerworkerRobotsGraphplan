@@ -31,3 +31,85 @@ Operadores
 
     Grua carga en localización_i
     Grua descarga en localización_j
+
+
+
+
+/* ACCIONES */
+    desplazar_robot
+
+    coger_contenedor_suelo(c,l,g)
+        precond:
+            radio_accion(g,l)
+            contenedor_cogido(g) == ninguno
+            posicion_contenedor(c) == suelo
+            localizacion_contenedor(c) == l
+        efecto
+            contenedor_codigo(g) == c
+            posicion_contenedor(c) == g
+
+
+
+    coger_contenedor_pila(c1, c2, l, g)
+        precond:
+            radio_accion(g,l)
+            contenedor_cogido(g) == ninguno
+            posicion_contenedor(c1) == c2
+            contenedor_encima(c1) == ninguno
+            localizacion_contenedor(c1) == l
+            localizacion_contenedor(c2) == l
+        efecto:
+            contenedor_cogido(g) = c1
+            posicion_contenedor(c1) = grua
+            contenedor_encima(c2) = ninguno
+
+    coger_contenedor_robot(c,g,l,r)
+        precond:
+            radio_accion(g,l)
+            localizacion_contenedor(c) == l
+            contenedor_codigo(g) == ninguno
+            contenedor_codigo(r) == c
+            localizacion_robot(r) == l
+        efecto:
+            contenedor_codigo(g) = c
+            contenedor_codigo(r) = ninguno
+
+
+
+    poner_contenedor_suelo(c,g,l)
+        precond:
+            radio_accion(g,l)
+            localizacion_contenedor(c) == l
+            contenedor_codigo(g) == c
+            contenedor_encima(suelo) == ninguno
+        efecto:
+            contenedor_cogido(g) = ninguno
+            contenedor_encima(suelo) = c
+
+
+
+    poner_contenedor_pila(c1,c2,g,l)
+        precond:
+            radio_accion(g,l)
+            contenedor_codigo(g) == c1
+            posicion_contenedor(c1) == g
+            localizacion_contenedor(c1) == l
+            localizacion_contenedor(c2= == l
+            contenedor_encima(c2) == ninguno
+        efecto:
+            contenedor_codigo(g) == ninguno
+            contendor_encima(c2) == c1
+            posicion_contenedor(c1) == c2
+
+    poner_contenedor_robot(c,g,l,r)
+        precond:
+            radio_accion(g,l)
+            contenedor_codigo(g) == c
+            contenedor_cogido(r) == ninguno
+            localizacion_contenedor(c) == l
+            localizacion_robot(r) == l
+        efecto:
+            contendor_cogido(g) == ninguno
+            contenedor_codigo(r) == c
+
+    mover_grua

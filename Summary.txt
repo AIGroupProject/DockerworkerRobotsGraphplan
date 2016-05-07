@@ -34,9 +34,26 @@ Operadores
 
 
 
+/* VARIABLES DE ESTADOS */
+
+    contenedor_cogido({GRUAS,ROBOTS}): {ninguno U CONTENDORES}
+    posicion_contenedor({CONTENEDORES}): {suelo U GRUAS U CONTENEDORES}
+    localizacion_contenedor({CONTENEDORES}):
+    contenedor_encima({CONTENEDORES}): {ninguno U CONTENEDORES}
+
+
+/* RELACIONES RIGIDAS */
+
+     adyacente({CONTENEDORES}, {CONTENEDORES})  los contenedores tienen que ser distintos
+     radio_accion({GRUAS}, {LOCALIZACIONES})
 
 /* ACCIONES */
-    desplazar_robot
+    desplazar_robot(l1,l2,r)
+        precond:
+            adyacente(l1,l2)
+            posicion_robot(r) == l1
+        efecto:
+            posicion_robot(r) == l2
 
     coger_contenedor_suelo(c,l,g)
         precond:
@@ -45,8 +62,8 @@ Operadores
             posicion_contenedor(c) == suelo
             localizacion_contenedor(c) == l
         efecto
-            contenedor_codigo(g) == c
-            posicion_contenedor(c) == g
+            contenedor_codigo(g) = c
+            posicion_contenedor(c) = g
 
 
 

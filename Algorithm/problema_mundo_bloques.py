@@ -1,6 +1,6 @@
 import random
-import problema_planificación as probpl
-import problema_planificación_HTN as probhtn
+import Algorithm.problema_planificación as probpl
+import Algorithm.problema_planificación_HTN as probhtn
 
 # Clases de símbolos de objetos
 Bloques = ['A', 'B', 'C']

@@ -1,7 +1,7 @@
 import re
 import itertools
 import copy
-import problema_espacio_estados as probee
+import Algorithm.problema_espacio_estados as probee
 
 
 class VariableDeEstados(dict):

@@ -1,6 +1,6 @@
 import itertools
 import copy
-import problema_planificación as probpl
+import Algorithm.problema_planificación as probpl
 
 
 class InstanciaMétodo:

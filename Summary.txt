@@ -38,8 +38,9 @@ Operadores
 
     contenedor_cogido({GRUAS,ROBOTS}): {ninguno U CONTENDORES}
     posicion_contenedor({CONTENEDORES}): {suelo U GRUAS U CONTENEDORES}
-    localizacion_contenedor({CONTENEDORES}):
+    localizacion_contenedor({CONTENEDORES}): {LOCALIZACIONES}
     contenedor_encima({CONTENEDORES}): {ninguno U CONTENEDORES}
+    localizacion_robot({ROBOTS}): {LOCALIZACIONES}
 
 
 /* RELACIONES RIGIDAS */
@@ -48,6 +49,16 @@ Operadores
      radio_accion({GRUAS}, {LOCALIZACIONES})
 
 /* ACCIONES */
+    desplazar_robot_contenedor(l1,l2,r,c)
+        precond:
+            adyacente(l1,l2)
+            localizacion_robot(r) == l1
+            localizacion_contenedor ==l1
+        efecto:
+            localizacion_robot(r) == l2
+            localizacion_contenedor==l2
+
+
     desplazar_robot(l1,l2,r)
         precond:
             adyacente(l1,l2)
@@ -96,10 +107,10 @@ Operadores
     poner_contenedor_suelo(c,g,l)
         precond:
             radio_accion(g,l)
-            localizacion_contenedor(c) == l
             contenedor_codigo(g) == c
             contenedor_encima(suelo) == ninguno
         efecto:
+            localizacion_contenedor(c) == l
             contenedor_cogido(g) = ninguno
             contenedor_encima(suelo) = c
 
@@ -110,23 +121,21 @@ Operadores
             radio_accion(g,l)
             contenedor_codigo(g) == c1
             posicion_contenedor(c1) == g
-            localizacion_contenedor(c1) == l
             localizacion_contenedor(c2= == l
             contenedor_encima(c2) == ninguno
         efecto:
             contenedor_codigo(g) == ninguno
             contendor_encima(c2) == c1
             posicion_contenedor(c1) == c2
+            localizacion_contenedor(c1) == l
 
     poner_contenedor_robot(c,g,l,r)
         precond:
             radio_accion(g,l)
             contenedor_codigo(g) == c
             contenedor_cogido(r) == ninguno
-            localizacion_contenedor(c) == l
             localizacion_robot(r) == l
         efecto:
             contendor_cogido(g) == ninguno
             contenedor_codigo(r) == c
-
-    mover_grua
+            localizacion_contenedor(c) == l

@@ -14,7 +14,7 @@ operadores.
 
 
 Símbolos de objetos
-    Localizaciones U Pilas U Robots U Gruas U {libre}
+    Localizaciones U Pilas U Robots U Gruas U {libre, ninguno}
 
 Relaciones Rígidas
     adyacente(localización_i, localización_j) i!=j

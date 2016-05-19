@@ -14,7 +14,7 @@ operadores.
 
 
 Símbolos de objetos
-    Localizaciones U Pilas U Robots U Gruas U {libre, ninguno}
+    Localizaciones U Pilas U Robots U Gruas U {suelo, ninguno}
 
 Relaciones Rígidas
     adyacente(localización_i, localización_j) i!=j
@@ -49,7 +49,7 @@ Operadores
      radio_accion({GRUAS}, {LOCALIZACIONES})
 
 /* ACCIONES */
-    desplazar_robot_contenedor(l1,l2,r,c)
+    #desplazar_robot_contenedor(l1,l2,r,c)
         precond:
             adyacente(l1,l2)
             localizacion_robot(r) == l1
@@ -59,14 +59,14 @@ Operadores
             localizacion_contenedor==l2
 
 
-    desplazar_robot(l1,l2,r)
+    #desplazar_robot(l1,l2,r)
         precond:
             adyacente(l1,l2)
-            posicion_robot(r) == l1
+            localizacion_robot(r) == l1
         efecto:
-            posicion_robot(r) == l2
+            localizacion_robot(r) == l2
 
-    coger_contenedor_suelo(c,l,g)
+    #coger_contenedor_suelo(c,l,g)
         precond:
             radio_accion(g,l)
             contenedor_cogido(g) == ninguno
@@ -78,7 +78,7 @@ Operadores
 
 
 
-    coger_contenedor_pila(c1, c2, l, g)
+    #coger_contenedor_pila(c1, c2, l, g)
         precond:
             radio_accion(g,l)
             contenedor_cogido(g) == ninguno
@@ -91,7 +91,7 @@ Operadores
             posicion_contenedor(c1) = grua
             contenedor_encima(c2) = ninguno
 
-    coger_contenedor_robot(c,g,l,r)
+    #coger_contenedor_robot(c,g,l,r)
         precond:
             radio_accion(g,l)
             localizacion_contenedor(c) == l
@@ -104,7 +104,7 @@ Operadores
 
 
 
-    poner_contenedor_suelo(c,g,l)
+   #poner_contenedor_suelo(c,g,l)
         precond:
             radio_accion(g,l)
             contenedor_codigo(g) == c
@@ -116,7 +116,7 @@ Operadores
 
 
 
-    poner_contenedor_pila(c1,c2,g,l)
+    #poner_contenedor_pila(c1,c2,g,l)
         precond:
             radio_accion(g,l)
             contenedor_codigo(g) == c1
@@ -129,7 +129,7 @@ Operadores
             posicion_contenedor(c1) == c2
             localizacion_contenedor(c1) == l
 
-    poner_contenedor_robot(c,g,l,r)
+   #poner_contenedor_robot(c,g,l,r)
         precond:
             radio_accion(g,l)
             contenedor_codigo(g) == c

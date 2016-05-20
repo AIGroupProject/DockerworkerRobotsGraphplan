@@ -8,12 +8,13 @@ Robots = ['r1']
 Gruas = ['g1', 'g2']
 Contenedores = ['c1', 'c2', 'c3']
 ContenedoresYSuelo = Contenedores + ['suelo']
+GruasYRobots = Gruas+Robots;
 
 # Variables de estados
 
 contenedor_cogido = probpl.VariableDeEstados(
     nombre='contenedor_codigo({b})',
-    b=(Localizaciones, Gruas))
+    b=GruasYRobots)
 
 posicion_contenedor = probpl.VariableDeEstados(
     nombre='posicion_contenedor({b})',
@@ -70,9 +71,6 @@ radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
 radio_fun = lambda grua, localizacion: localizacion in radio[grua]
 
 print('¿Esta en el radio de accion?', radio_fun('g1', 'l3'))
-
-
-
 
 # Operadores
 
@@ -174,7 +172,6 @@ poner_contenedor_pila = probpl.Operador(
     l=Localizaciones
 )
 
-
 poner_contenedor_robot = probpl.Operador(
     nombre='poner_contenedor_robot',
     precondiciones=[contenedor_cogido({'{g}': '{c}'}),
@@ -190,6 +187,24 @@ poner_contenedor_robot = probpl.Operador(
     r=Robots
 )
 
+print(posicion_contenedor({'c1': 'l1',
+                           'c2': 'c1',
+                           'c3': 'l1'}))
+
+print(localizacion_contenedor({'c1': 'l1',
+                               'c2': 'l1',
+                               'c3': 'l1'}))
+
+print(contenedor_encima({'c1': 'c2',
+                         'c2': 'c3',
+                         'c3': 'ninguno',
+                         'suelo': 'c1'}))
+
+print(contenedor_cogido({'g1': 'ninguno',
+                         'g2': 'ninguno',
+                        'r1': 'ninguno'}))
+
+print(localizacion_robot({'r1': 'l3'}))
 
 problema_estibadores = probpl.ProblemaPlanificación(
     operadores=[desplazar_robot_contenedor,
@@ -208,10 +223,12 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                                           'c3': 'l1'}),
                                  contenedor_encima({'c1': 'c2',
                                                     'c2': 'c3',
-                                                    'c3': 'ninguno'}),
+                                                    'c3': 'ninguno',
+                                                    'suelo': 'c1'}),
                                  contenedor_cogido({'g1': 'ninguno',
-                                                    'g2': 'ninguno'}),
-                                 localizacion_robot({'l1': 'l3'})
+                                                    'g2': 'ninguno',
+                                                    'r1': 'ninguno'}),
+                                 localizacion_robot({'r1': 'l3'})
                                  ),
     objetivos=posicion_contenedor({'c1': 'l3',
                                    'c2': 'c1',

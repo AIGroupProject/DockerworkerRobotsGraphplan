@@ -3,12 +3,12 @@ import Algorithm.problema_planificación as probpl
 import numpy as np
 
 # Clases de símbolos de objetos
-Localizaciones = ['l1', 'l2', 'l3']
-Robots = ['r1']
-Gruas = ['g1', 'g2']
-Contenedores = ['c1', 'c2', 'c3']
+Localizaciones = ['L1', 'L2']
+Robots = ['R1']
+Gruas = ['G1']
+Contenedores = ['C1']
 ContenedoresYSuelo = Contenedores + ['suelo']
-GruasYRobots = Gruas+Robots;
+GruasYRobots = Gruas + Robots;
 
 # Variables de estados
 
@@ -36,15 +36,13 @@ localizacion_robot = probpl.VariableDeEstados(
 )
 
 # Ejemplo impresion de Variable de Estado
-print(contenedor_encima({'c1': 'Ninguno'}))
+# print(contenedor_encima({'c1': 'ninguno'}))
 
 ## Esto se puede sacar a una clase que contruya una matriz
 ## tal como se hace aqui, con sus get y set
 traceabilityMatrix = np.zeros((len(Localizaciones), len(Localizaciones)), dtype='bool')
 # l1 adyacente l2
 traceabilityMatrix[0][1] = True
-# l2 adyacente l3
-traceabilityMatrix[1][2] = True
 
 matrizTrazSimet = (traceabilityMatrix + traceabilityMatrix.T)
 
@@ -55,22 +53,9 @@ adyacente = probpl.RelaciónRígida(lambda x, y:
                                   matrizTrazSimet[
                                       Localizaciones.index(x),
                                       Localizaciones.index(y)])
-
-##Prueba de la función lambda
-adyacente_fun = lambda x, y: matrizTrazSimet[
-    Localizaciones.index(x),
-    Localizaciones.index(y)]
-print('¿Existe relacion de adyacencia?', adyacente_fun('l1', 'l3'))
-
-radio = {'g1': ['l1', 'l2'], 'g2': ['l3']}
-
+radio = {'G1': ['L1', 'L2']}
 radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
                                      localizacion in radio[grua])
-
-##Prueba de la función lambda
-radio_fun = lambda grua, localizacion: localizacion in radio[grua]
-
-print('¿Esta en el radio de accion?', radio_fun('g1', 'l3'))
 
 # Operadores
 
@@ -187,24 +172,7 @@ poner_contenedor_robot = probpl.Operador(
     r=Robots
 )
 
-print(posicion_contenedor({'c1': 'l1',
-                           'c2': 'c1',
-                           'c3': 'l1'}))
 
-print(localizacion_contenedor({'c1': 'l1',
-                               'c2': 'l1',
-                               'c3': 'l1'}))
-
-print(contenedor_encima({'c1': 'c2',
-                         'c2': 'c3',
-                         'c3': 'ninguno',
-                         'suelo': 'c1'}))
-
-print(contenedor_cogido({'g1': 'ninguno',
-                         'g2': 'ninguno',
-                        'r1': 'ninguno'}))
-
-print(localizacion_robot({'r1': 'l3'}))
 
 problema_estibadores = probpl.ProblemaPlanificación(
     operadores=[desplazar_robot_contenedor,
@@ -215,22 +183,13 @@ problema_estibadores = probpl.ProblemaPlanificación(
                 poner_contenedor_suelo,
                 poner_contenedor_pila,
                 poner_contenedor_robot],
-    estado_inicial=probpl.Estado(posicion_contenedor({'c1': 'l1',
-                                                      'c2': 'c1',
-                                                      'c3': 'l1'}),
-                                 localizacion_contenedor({'c1': 'l1',
-                                                          'c2': 'l1',
-                                                          'c3': 'l1'}),
-                                 contenedor_encima({'c1': 'c2',
-                                                    'c2': 'c3',
-                                                    'c3': 'ninguno',
-                                                    'suelo': 'c1'}),
-                                 contenedor_cogido({'g1': 'ninguno',
-                                                    'g2': 'ninguno',
-                                                    'r1': 'ninguno'}),
-                                 localizacion_robot({'r1': 'l3'})
+    estado_inicial=probpl.Estado(posicion_contenedor({'C1': 'suelo'}),
+                                 localizacion_contenedor({'C1': 'L1'}),
+                                 contenedor_encima({'C1': 'ninguno',
+                                                    'suelo': 'C1'}),
+                                 contenedor_cogido({'G1': 'ninguno',
+                                                    'R1': 'ninguno'}),
+                                 localizacion_robot({'R1': 'L1'})
                                  ),
-    objetivos=posicion_contenedor({'c1': 'l3',
-                                   'c2': 'c1',
-                                   'c3': 'c2'})
+    objetivos=localizacion_contenedor({'C1': 'L2'})
 )

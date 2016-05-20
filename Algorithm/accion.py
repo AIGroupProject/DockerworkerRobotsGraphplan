@@ -28,7 +28,9 @@ class Accion(object):
         return atomo in self.efectosP
 
     def siPrecondEnLista(self,lista):
-        for pred in self.precondiciones:
-            if pred not in lista:
-                return False
-        return True
+
+        return [False if pred not in lista else True for pred in self.precondiciones]
+        # for pred in self.precondiciones:
+        #     if pred not in lista:
+        #         return False
+        # return True

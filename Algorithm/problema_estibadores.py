@@ -13,7 +13,7 @@ GruasYRobots = Gruas + Robots;
 # Variables de estados
 
 contenedor_cogido = probpl.VariableDeEstados(
-    nombre='contenedor_codigo({b})',
+    nombre='contenedor_cogido({b})',
     b=GruasYRobots)
 
 posicion_contenedor = probpl.VariableDeEstados(
@@ -56,6 +56,9 @@ adyacente = probpl.RelaciónRígida(lambda x, y:
 radio = {'G1': ['L1', 'L2']}
 radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
                                      localizacion in radio[grua])
+
+contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
+                                                   c1 != c2)
 
 # Operadores
 
@@ -105,7 +108,9 @@ coger_contenedor_pila = probpl.Operador(
     efectos=[contenedor_cogido({'{g}': '{c1}'}),
              posicion_contenedor({'{c1}': '{g}'}),
              contenedor_encima({'{c2}': 'ninguno'})],
-    relaciones_rígidas=radio_accion('{g}', '{l}'),
+    relaciones_rígidas=[radio_accion('{g}', '{l}'),
+                        contenedor_encima_si_mismo('{c1}', '{c2}')
+                        ],
     c1=Contenedores,
     c2=Contenedores,
     l=Localizaciones,
@@ -150,7 +155,9 @@ poner_contenedor_pila = probpl.Operador(
              posicion_contenedor({'{c1}': '{c2}'}),
              contenedor_encima({'{c2}': 'ninguno'})
              ],
-    relaciones_rígidas=radio_accion('{g}', '{l}'),
+    relaciones_rígidas=[radio_accion('{g}', '{l}'),
+                        contenedor_encima_si_mismo('{c1}', '{c2}')
+                        ],
     c1=Contenedores,
     c2=Contenedores,
     g=Gruas,

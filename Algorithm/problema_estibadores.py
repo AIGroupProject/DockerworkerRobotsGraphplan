@@ -1,5 +1,6 @@
 import random
 import Algorithm.problema_planificación as probpl
+import Algorithm.búsqueda_espacio_estados as búsqee
 import numpy as np
 
 # Clases de símbolos de objetos
@@ -173,7 +174,7 @@ poner_contenedor_robot = probpl.Operador(
              contenedor_cogido({'{r}': '{c}'}),
              localizacion_contenedor({'{c}': '{l}'})],
     relaciones_rígidas=radio_accion('{g}', '{l}'),
-    c1=Contenedores,
+    c=Contenedores,
     g=Gruas,
     l=Localizaciones,
     r=Robots
@@ -200,3 +201,8 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                  ),
     objetivos=localizacion_contenedor({'C1': 'L2'})
 )
+
+
+búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
+
+print(búsqueda_profundidad.buscar(problema_estibadores))

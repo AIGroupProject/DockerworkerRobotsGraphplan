@@ -66,7 +66,8 @@ contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
 desplazar_robot_contenedor = probpl.Operador(
     nombre='desplazar_robot_contenedor({l1},{l2},{r},{c})',
     precondiciones=[localizacion_robot({'{r}': '{l1}'}),
-                    localizacion_contenedor({'{c}': '{l1}'})],
+                    localizacion_contenedor({'{c}': '{l1}'}),
+                    contenedor_cogido({'{r}': '{c}'})],
     efectos=[localizacion_robot({'{r}': '{l2}'}),
              localizacion_contenedor({'{c}': '{l2}'})],
     relaciones_rígidas=adyacente('{l1}', '{l2}'),
@@ -205,4 +206,12 @@ problema_estibadores = probpl.ProblemaPlanificación(
 
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
 
+busqueda_anchura = búsqee.BúsquedaEnAnchura();
+
+busqueda_optima = búsqee.BúsquedaÓptima();
+
 print(búsqueda_profundidad.buscar(problema_estibadores))
+
+print(busqueda_anchura.buscar(problema_estibadores))
+
+print(busqueda_optima.buscar(problema_estibadores))

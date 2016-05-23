@@ -47,8 +47,6 @@ traceabilityMatrix[0][1] = True
 
 matrizTrazSimet = (traceabilityMatrix + traceabilityMatrix.T)
 
-print(matrizTrazSimet)
-
 # Relaciones rígidas
 adyacente = probpl.RelaciónRígida(lambda x, y:
                                   matrizTrazSimet[
@@ -170,18 +168,16 @@ poner_contenedor_robot = probpl.Operador(
     nombre='poner_contenedor_robot',
     precondiciones=[contenedor_cogido({'{g}': '{c}'}),
                     contenedor_cogido({'{r}': 'ninguno'}),
-                    localizacion_robot({'{r}': '{l}'})],
+                    localizacion_robot({'{r}': '{l}'}),
+                    localizacion_contenedor({'{c}': '{l}'})],
     efectos=[contenedor_cogido({'{g}': 'ninguno'}),
-             contenedor_cogido({'{r}': '{c}'}),
-             localizacion_contenedor({'{c}': '{l}'})],
+             contenedor_cogido({'{r}': '{c}'})],
     relaciones_rígidas=radio_accion('{g}', '{l}'),
     c=Contenedores,
     g=Gruas,
     l=Localizaciones,
     r=Robots
 )
-
-
 
 problema_estibadores = probpl.ProblemaPlanificación(
     operadores=[desplazar_robot_contenedor,
@@ -202,7 +198,6 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                  ),
     objetivos=localizacion_contenedor({'C1': 'L2'})
 )
-
 
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
 

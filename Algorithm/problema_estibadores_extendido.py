@@ -2,6 +2,8 @@ import random
 import Algorithm.problema_planificación as probpl
 import Algorithm.búsqueda_espacio_estados as búsqee
 import numpy as np
+from time import time  # medir tiempos
+from timeit import timeit
 
 # Clases de símbolos de objetos
 Localizaciones = ['L1', 'L2']
@@ -9,7 +11,7 @@ Robots = ['R1']
 Gruas = ['G1', 'G2']
 Contenedores = ['C1']
 Pilas = ['P1', 'P2']
-ContenedoresYPallet = Contenedores+['pallet']
+ContenedoresYPallet = Contenedores + ['pallet']
 
 # Variables de estado
 
@@ -64,7 +66,7 @@ adyacente = probpl.RelaciónRígida(lambda x, y:
                                   matrizTrazSimet[
                                       Localizaciones.index(x),
                                       Localizaciones.index(y)])
-radio = {'G1': ['L1'],'G2': ['L2']}
+radio = {'G1': ['L1'], 'G2': ['L2']}
 radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
                                      localizacion in radio[grua])
 
@@ -172,13 +174,32 @@ problema_estibadores = probpl.ProblemaPlanificación(
 )
 
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
+busqueda_anchura = búsqee.BúsquedaEnAnchura()
+busqueda_optima = búsqee.BúsquedaÓptima()
+# busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor()
 
-busqueda_anchura = búsqee.BúsquedaEnAnchura();
+tiempo_inicial = time()
+búsqueda_profundidad.buscar(problema_estibadores)
+tiempo_final = time()
+print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
 
-busqueda_optima = búsqee.BúsquedaÓptima();
+tiempo_inicial = time()
+busqueda_anchura.buscar(problema_estibadores)
+tiempo_final = time()
+print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+
+tiempo_inicial = time()
+busqueda_optima.buscar(problema_estibadores)
+tiempo_final = time()
+print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+
+
+# tiempo_inicial = time()
+# busqueda_primero_el_mejor.buscar(problema_estibadores)
+# tiempo_final = time()
+# print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
 
 print(búsqueda_profundidad.buscar(problema_estibadores))
-
 print(busqueda_anchura.buscar(problema_estibadores))
-
 print(busqueda_optima.buscar(problema_estibadores))
+# print(busqueda_primero_el_mejor.buscar(problema_estibadores))

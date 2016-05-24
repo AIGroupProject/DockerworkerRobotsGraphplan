@@ -3,7 +3,7 @@ import Algorithm.problema_planificación as probpl
 import Algorithm.búsqueda_espacio_estados as búsqee
 import numpy as np
 from time import time  # medir tiempos
-from timeit import timeit
+import profile
 
 # Clases de símbolos de objetos
 Localizaciones = ['L1', 'L2']
@@ -202,4 +202,8 @@ print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
 print(búsqueda_profundidad.buscar(problema_estibadores))
 print(busqueda_anchura.buscar(problema_estibadores))
 print(busqueda_optima.buscar(problema_estibadores))
-# print(busqueda_primero_el_mejor.buscar(problema_estibadores))
+
+profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
+profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
+profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
+

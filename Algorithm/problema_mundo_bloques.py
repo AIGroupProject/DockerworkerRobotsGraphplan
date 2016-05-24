@@ -193,6 +193,10 @@ problema_mundo_bloques_HTN = probhtn.ProblemaPlanificaciónHTN(
     tareas=['colocar(C, mesa)', 'colocar(B, C)', 'colocar(A, B)']
 )
 
+busqueda = probhtn.DescomposiciónHaciaAdelante();
+
+print(busqueda.buscar(problema_mundo_bloques_HTN))
+
 
 # Generador aleatorio de instancias del problema
 class ProblemaMundoBloques(probhtn.ProblemaPlanificaciónHTN):

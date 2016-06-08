@@ -2,38 +2,52 @@ import random
 import Algorithm.problema_planificación as probpl
 import Algorithm.búsqueda_espacio_estados as búsqee
 import numpy as np
+from time import time  # medir tiempos
+import profile
 
 # Clases de símbolos de objetos
 Localizaciones = ['L1', 'L2']
 Robots = ['R1']
-Gruas = ['G1']
+Gruas = ['G1', 'G2']
 Contenedores = ['C1']
-ContenedoresYSuelo = Contenedores + ['suelo']
-GruasYRobots = Gruas + Robots;
+Pilas = ['P1', 'P2']
+ContenedoresYPallet = Contenedores + ['pallet']
 
-# Variables de estados
+# Variables de estado
 
-contenedor_cogido = probpl.VariableDeEstados(
-    nombre='contenedor_cogido({b})',
-    b=GruasYRobots)
-
-posicion_contenedor = probpl.VariableDeEstados(
-    nombre='posicion_contenedor({b})',
-    b=Contenedores)
-
-localizacion_contenedor = probpl.VariableDeEstados(
-    nombre='localizacion_contenedor({b})',
-    b=Contenedores
-)
-
-contenedor_encima = probpl.VariableDeEstados(
-    nombre='contenedor_encima({b})',
-    b=ContenedoresYSuelo
+localizacion_ocupada = probpl.VariableDeEstados(
+    nombre='localizacion_ocupada({l})',
+    l=Localizaciones
 )
 
 localizacion_robot = probpl.VariableDeEstados(
-    nombre='localizacion_robot({b})',
-    b=Robots
+    nombre='localizacion_robot({r})',
+    r=Robots
+)
+
+robot_cargado_contenedor = probpl.VariableDeEstados(
+    nombre='robot_cargado_contenedor({r})',
+    r=Robots
+)
+
+grua_contenedor_cogido = probpl.VariableDeEstados(
+    nombre='grua_contenedor_cogido({g})',
+    g=Gruas
+)
+
+contenedor_en_pila = probpl.VariableDeEstados(
+    nombre='contenedor_en_pila({c})',
+    c=Contenedores
+)
+
+contenedor_sobre = probpl.VariableDeEstados(
+    nombre='contenedor_sobre({c})',
+    c=ContenedoresYPallet
+)
+
+contenedor_encima_pila = probpl.VariableDeEstados(
+    nombre='contenedor_encima_pila({p})',
+    p=Pilas
 )
 
 # Ejemplo impresion de Variable de Estado
@@ -52,161 +66,148 @@ adyacente = probpl.RelaciónRígida(lambda x, y:
                                   matrizTrazSimet[
                                       Localizaciones.index(x),
                                       Localizaciones.index(y)])
-radio = {'G1': ['L1', 'L2']}
+radio = {'G1': ['L1'], 'G2': ['L2']}
 radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
                                      localizacion in radio[grua])
 
 contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
                                                    c1 != c2)
 
+localizacion_pila = {'L1': ['P1'], 'L2': ['P2']}
+localizaciones_con_pilas = probpl.RelaciónRígida(lambda pila, localizacion:
+                                                 pila in localizacion_pila[localizacion])
+
 # Operadores
 
-desplazar_robot_contenedor = probpl.Operador(
-    nombre='desplazar_robot_contenedor({l1},{l2},{r},{c})',
+desplazar_robot = probpl.Operador(
+    nombre='desplazar_robot({l1},{l2},{r})',
     precondiciones=[localizacion_robot({'{r}': '{l1}'}),
-                    localizacion_contenedor({'{c}': '{l1}'}),
-                    contenedor_cogido({'{r}': '{c}'})],
+                    localizacion_ocupada({'{l2}': 'no'}),
+                    localizacion_ocupada({'{l1}': 'si'})],
     efectos=[localizacion_robot({'{r}': '{l2}'}),
-             localizacion_contenedor({'{c}': '{l2}'})],
+             localizacion_ocupada({'{l1}': 'no'}),
+             localizacion_ocupada({'{l2}': 'si'})],
     relaciones_rígidas=adyacente('{l1}', '{l2}'),
     l1=Localizaciones,
     l2=Localizaciones,
+    r=Robots
+)
+
+grua_carga_robot = probpl.Operador(
+    nombre='grua_carga_robot({l},{g},{r},{c})',
+    precondiciones=[grua_contenedor_cogido({'{g}': '{c}'}),
+                    localizacion_robot({'{r}': '{l}'}),
+                    robot_cargado_contenedor({'{r}': 'ninguno'})],
+    efectos=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+             robot_cargado_contenedor({'{r}': '{c}'})],
+    relaciones_rígidas=radio_accion('{g}', '{l}'),
+    l=Localizaciones,
+    g=Gruas,
     r=Robots,
     c=Contenedores
 )
 
-desplazar_robot = probpl.Operador(
-    nombre='desplazar_robot({l1},{l2},{r})',
-    precondiciones=[localizacion_robot({'{r}': '{l1}'})],
-    efectos=[localizacion_robot({'{r}': '{l2}'})],
-    relaciones_rígidas=adyacente('{l1}', '{l2}'),
-    l1=Localizaciones,
-    l2=Localizaciones,
-    r=Robots
+grua_descarga_robot = probpl.Operador(
+    nombre='grua_descarga_robot({l},{g},{r},{c})',
+    precondiciones=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+                    localizacion_robot({'{r}': '{l}'}),
+                    robot_cargado_contenedor({'{r}': '{c}'})],
+    efectos=[grua_contenedor_cogido({'{g}': '{c}'}),
+             robot_cargado_contenedor({'{r}': 'ninguno'})],
+    relaciones_rígidas=radio_accion('{g}', '{l}'),
+    l=Localizaciones,
+    g=Gruas,
+    r=Robots,
+    c=Contenedores
 )
 
-coger_contenedor_suelo = probpl.Operador(
-    nombre='coger_contenedor_suelo({c},{l},{g})',
-    precondiciones=[contenedor_cogido({'{g}': 'ninguno'}),
-                    posicion_contenedor({'{c}': 'suelo'}),
-                    localizacion_contenedor({'{c}': '{l}'})],
-    efectos=[contenedor_cogido({'{g}': '{c}'}),
-             posicion_contenedor({'{c}': '{g}'})],
-    relaciones_rígidas=radio_accion('{g}', '{l}'),
-    c=Contenedores,
+poner_contenedor_en_pila = probpl.Operador(
+    nombre='poner_contenedor_en_pila({l},{g},{c1},{c2},{p})',
+    precondiciones=[grua_contenedor_cogido({'{g}': '{c1}'}),
+                    contenedor_encima_pila({'{p}': '{c2}'}),
+                    contenedor_sobre({'{c2}': 'ninguno'}),
+                    contenedor_en_pila({'{c1}': 'ninguno'})],
+    efectos=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+             contenedor_en_pila({'{c1}': '{p}'}),
+             contenedor_encima_pila({'{p}': '{c1}'}),
+             contenedor_sobre({'{c2}': '{c1}'})],
+    relaciones_rígidas=[radio_accion('{g}', '{l}'),
+                        localizaciones_con_pilas('{p}', '{l}')],
     l=Localizaciones,
-    g=Gruas
+    g=Gruas,
+    r=Robots,
+    c1=Contenedores,
+    c2=ContenedoresYPallet,
+    p=Pilas
 )
 
 coger_contenedor_pila = probpl.Operador(
-    nombre='coger_contenedor_pila',
-    precondiciones=[contenedor_cogido({'{g}': 'ninguno'}),
-                    posicion_contenedor({'{c1}': '{c2}'}),
-                    contenedor_encima({'{c1}': 'ninguno'}),
-                    localizacion_contenedor({'{c1}': '{l}'}),
-                    localizacion_contenedor({'{c2}': '{l}'})],
-    efectos=[contenedor_cogido({'{g}': '{c1}'}),
-             posicion_contenedor({'{c1}': '{g}'}),
-             contenedor_encima({'{c2}': 'ninguno'})],
+    nombre='coger_contenedor_pila({l},{g},{c1},{c2},{p})',
+    precondiciones=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+                    contenedor_encima_pila({'{p}': '{c1}'}),
+                    contenedor_sobre({'{c2}': '{c1}'}),
+                    contenedor_en_pila({'{c1}': '{p}'})],
+    efectos=[grua_contenedor_cogido({'{g}': '{c1}'}),
+             contenedor_en_pila({'{c1}': 'ninguno'}),
+             contenedor_encima_pila({'{p}': '{c2}'}),
+             contenedor_sobre({'{c2}': 'ninguno'})],
     relaciones_rígidas=[radio_accion('{g}', '{l}'),
-                        contenedor_encima_si_mismo('{c1}', '{c2}')
-                        ],
+                        localizaciones_con_pilas('{p}', '{l}')],
+    l=Localizaciones,
+    g=Gruas,
+    r=Robots,
     c1=Contenedores,
-    c2=Contenedores,
-    l=Localizaciones,
-    g=Gruas
-)
-
-coger_contenedor_robot = probpl.Operador(
-    nombre='coger_contenedor_robot',
-    precondiciones=[localizacion_contenedor({'{c}': '{l}'}),
-                    contenedor_cogido({'{g}': 'ninguno'}),
-                    contenedor_cogido({'{r}': '{c}'}),
-                    localizacion_robot({'{r}': '{l}'})],
-    efectos=[contenedor_cogido({'{g}': '{c}'}),
-             contenedor_cogido({'{r}': 'ninguno'})],
-    relaciones_rígidas=radio_accion('{g}', '{l}'),
-    c=Contenedores,
-    g=Gruas,
-    l=Localizaciones,
-    r=Robots
-)
-
-poner_contenedor_suelo = probpl.Operador(
-    nombre='poner_contenedor_suelo',
-    precondiciones=[contenedor_cogido({'{g}': '{c}'}),
-                    contenedor_encima({'suelo': 'ninguno'})],
-    efectos=[contenedor_cogido({'{g}': 'ninguno'}),
-             contenedor_encima({'suelo': '{c}'})],
-    relaciones_rígidas=radio_accion('{g}', '{l}'),
-    c=Contenedores,
-    g=Gruas,
-    l=Localizaciones
-)
-
-poner_contenedor_pila = probpl.Operador(
-    nombre='poner_contenedor_pila',
-    precondiciones=[contenedor_cogido({'{g}': '{c1}'}),
-                    posicion_contenedor({'{c1}': '{g}'}),
-                    localizacion_contenedor({'{c2}': '{l}'}),
-                    contenedor_encima({'{c2}': 'ninguno'})],
-    efectos=[contenedor_cogido({'{g}': 'ninguno'}),
-             contenedor_encima({'{c2}': '{c1}'}),
-             posicion_contenedor({'{c1}': '{c2}'}),
-             contenedor_encima({'{c2}': 'ninguno'})
-             ],
-    relaciones_rígidas=[radio_accion('{g}', '{l}'),
-                        contenedor_encima_si_mismo('{c1}', '{c2}')
-                        ],
-    c1=Contenedores,
-    c2=Contenedores,
-    g=Gruas,
-    l=Localizaciones
-)
-
-poner_contenedor_robot = probpl.Operador(
-    nombre='poner_contenedor_robot',
-    precondiciones=[contenedor_cogido({'{g}': '{c}'}),
-                    contenedor_cogido({'{r}': 'ninguno'}),
-                    localizacion_robot({'{r}': '{l}'}),
-                    localizacion_contenedor({'{c}': '{l}'})],
-    efectos=[contenedor_cogido({'{g}': 'ninguno'}),
-             contenedor_cogido({'{r}': '{c}'})],
-    relaciones_rígidas=radio_accion('{g}', '{l}'),
-    c=Contenedores,
-    g=Gruas,
-    l=Localizaciones,
-    r=Robots
+    c2=ContenedoresYPallet,
+    p=Pilas
 )
 
 problema_estibadores = probpl.ProblemaPlanificación(
-    operadores=[desplazar_robot_contenedor,
-                desplazar_robot,
-                coger_contenedor_suelo,
-                coger_contenedor_pila,
-                coger_contenedor_robot,
-                poner_contenedor_suelo,
-                poner_contenedor_pila,
-                poner_contenedor_robot],
-    estado_inicial=probpl.Estado(posicion_contenedor({'C1': 'suelo'}),
-                                 localizacion_contenedor({'C1': 'L1'}),
-                                 contenedor_encima({'C1': 'ninguno',
-                                                    'suelo': 'C1'}),
-                                 contenedor_cogido({'G1': 'ninguno',
-                                                    'R1': 'ninguno'}),
-                                 localizacion_robot({'R1': 'L1'})
-                                 ),
-    objetivos=localizacion_contenedor({'C1': 'L2'})
+    operadores=[desplazar_robot,
+                grua_carga_robot,
+                grua_descarga_robot,
+                poner_contenedor_en_pila,
+                coger_contenedor_pila],
+    estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'no'}),
+                                 localizacion_robot({'R1': 'L1'}),
+                                 robot_cargado_contenedor({'R1': 'ninguno'}),
+                                 grua_contenedor_cogido({'G1': 'ninguno', 'G2': 'ninguno'}),
+                                 contenedor_en_pila({'C1': 'P1'}),
+                                 contenedor_sobre({'C1': 'ninguno', 'pallet': 'C1'}),
+                                 contenedor_encima_pila({'P1': 'C1', 'P2': 'pallet'})),
+    objetivos=contenedor_en_pila({'C1': 'P2'})
 )
 
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
+busqueda_anchura = búsqee.BúsquedaEnAnchura()
+busqueda_optima = búsqee.BúsquedaÓptima()
+# busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor()
 
-busqueda_anchura = búsqee.BúsquedaEnAnchura();
+tiempo_inicial = time()
+búsqueda_profundidad.buscar(problema_estibadores)
+tiempo_final = time()
+print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
 
-busqueda_optima = búsqee.BúsquedaÓptima();
+tiempo_inicial = time()
+busqueda_anchura.buscar(problema_estibadores)
+tiempo_final = time()
+print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+
+tiempo_inicial = time()
+busqueda_optima.buscar(problema_estibadores)
+tiempo_final = time()
+print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+
+
+# tiempo_inicial = time()
+# busqueda_primero_el_mejor.buscar(problema_estibadores)
+# tiempo_final = time()
+# print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
 
 print(búsqueda_profundidad.buscar(problema_estibadores))
-
 print(busqueda_anchura.buscar(problema_estibadores))
-
 print(busqueda_optima.buscar(problema_estibadores))
+
+profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
+profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
+profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
+

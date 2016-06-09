@@ -1,9 +1,10 @@
-import random
-import Algorithm.problema_planificación as probpl
-import Algorithm.búsqueda_espacio_estados as búsqee
-import numpy as np
-from time import time  # medir tiempos
 import profile
+from time import time  # medir tiempos
+
+import numpy as np
+
+import algoritmos.búsqueda_espacio_estados as búsqee
+import estructuraProblema.problema_planificación as probpl
 
 # Clases de símbolos de objetos
 Localizaciones = ['L1', 'L2']
@@ -84,9 +85,12 @@ desplazar_robot = probpl.Operador(
     precondiciones=[localizacion_robot({'{r}': '{l1}'}),
                     localizacion_ocupada({'{l2}': 'no'}),
                     localizacion_ocupada({'{l1}': 'si'})],
-    efectos=[localizacion_robot({'{r}': '{l2}'}),
-             localizacion_ocupada({'{l1}': 'no'}),
-             localizacion_ocupada({'{l2}': 'si'})],
+    efectosP=[localizacion_robot({'{r}': '{l2}'}),
+              localizacion_ocupada({'{l1}': 'no'}),
+              localizacion_ocupada({'{l2}': 'si'})],
+    efectosN=[localizacion_robot({'{r}': '{l1}'}),
+              localizacion_ocupada({'{l2}': 'no'}),
+              localizacion_ocupada({'{l1}': 'si'})],
     relaciones_rígidas=adyacente('{l1}', '{l2}'),
     l1=Localizaciones,
     l2=Localizaciones,
@@ -98,8 +102,10 @@ grua_carga_robot = probpl.Operador(
     precondiciones=[grua_contenedor_cogido({'{g}': '{c}'}),
                     localizacion_robot({'{r}': '{l}'}),
                     robot_cargado_contenedor({'{r}': 'ninguno'})],
-    efectos=[grua_contenedor_cogido({'{g}': 'ninguno'}),
-             robot_cargado_contenedor({'{r}': '{c}'})],
+    efectosP=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+              robot_cargado_contenedor({'{r}': '{c}'})],
+    efectosN=[grua_contenedor_cogido({'{g}': '{c}'}),
+              robot_cargado_contenedor({'{r}': 'ninguno'})],
     relaciones_rígidas=radio_accion('{g}', '{l}'),
     l=Localizaciones,
     g=Gruas,
@@ -112,8 +118,10 @@ grua_descarga_robot = probpl.Operador(
     precondiciones=[grua_contenedor_cogido({'{g}': 'ninguno'}),
                     localizacion_robot({'{r}': '{l}'}),
                     robot_cargado_contenedor({'{r}': '{c}'})],
-    efectos=[grua_contenedor_cogido({'{g}': '{c}'}),
-             robot_cargado_contenedor({'{r}': 'ninguno'})],
+    efectosP=[grua_contenedor_cogido({'{g}': '{c}'}),
+              robot_cargado_contenedor({'{r}': 'ninguno'})],
+    efectosN=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+              robot_cargado_contenedor({'{r}': '{c}'})],
     relaciones_rígidas=radio_accion('{g}', '{l}'),
     l=Localizaciones,
     g=Gruas,
@@ -127,10 +135,14 @@ poner_contenedor_en_pila = probpl.Operador(
                     contenedor_encima_pila({'{p}': '{c2}'}),
                     contenedor_sobre({'{c2}': 'ninguno'}),
                     contenedor_en_pila({'{c1}': 'ninguno'})],
-    efectos=[grua_contenedor_cogido({'{g}': 'ninguno'}),
-             contenedor_en_pila({'{c1}': '{p}'}),
-             contenedor_encima_pila({'{p}': '{c1}'}),
-             contenedor_sobre({'{c2}': '{c1}'})],
+    efectosP=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+              contenedor_en_pila({'{c1}': '{p}'}),
+              contenedor_encima_pila({'{p}': '{c1}'}),
+              contenedor_sobre({'{c2}': '{c1}'})],
+    efectosN=[grua_contenedor_cogido({'{g}': '{c1}'}),
+              contenedor_encima_pila({'{p}': '{c2}'}),
+              contenedor_sobre({'{c2}': 'ninguno'}),
+              contenedor_en_pila({'{c1}': 'ninguno'})],
     relaciones_rígidas=[radio_accion('{g}', '{l}'),
                         localizaciones_con_pilas('{p}', '{l}')],
     l=Localizaciones,
@@ -147,10 +159,14 @@ coger_contenedor_pila = probpl.Operador(
                     contenedor_encima_pila({'{p}': '{c1}'}),
                     contenedor_sobre({'{c2}': '{c1}'}),
                     contenedor_en_pila({'{c1}': '{p}'})],
-    efectos=[grua_contenedor_cogido({'{g}': '{c1}'}),
-             contenedor_en_pila({'{c1}': 'ninguno'}),
-             contenedor_encima_pila({'{p}': '{c2}'}),
-             contenedor_sobre({'{c2}': 'ninguno'})],
+    efectosP=[grua_contenedor_cogido({'{g}': '{c1}'}),
+              contenedor_en_pila({'{c1}': 'ninguno'}),
+              contenedor_encima_pila({'{p}': '{c2}'}),
+              contenedor_sobre({'{c2}': 'ninguno'})],
+    efectosN=[grua_contenedor_cogido({'{g}': 'ninguno'}),
+              contenedor_encima_pila({'{p}': '{c1}'}),
+              contenedor_sobre({'{c2}': '{c1}'}),
+              contenedor_en_pila({'{c1}': '{p}'})],
     relaciones_rígidas=[radio_accion('{g}', '{l}'),
                         localizaciones_con_pilas('{p}', '{l}')],
     l=Localizaciones,

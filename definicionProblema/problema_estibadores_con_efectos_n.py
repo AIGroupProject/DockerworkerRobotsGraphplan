@@ -153,6 +153,7 @@ poner_contenedor_en_pila = probpl.Operador(
     p=Pilas
 )
 
+
 coger_contenedor_pila = probpl.Operador(
     nombre='coger_contenedor_pila({l},{g},{c1},{c2},{p})',
     precondiciones=[grua_contenedor_cogido({'{g}': 'ninguno'}),
@@ -177,12 +178,83 @@ coger_contenedor_pila = probpl.Operador(
     p=Pilas
 )
 
+contenedor_encima_pila_persistencia = probpl.Operador(
+    nombre='contenedor_encima_pila_persistencia({p},{c})',
+    precondiciones=[contenedor_encima_pila({'{p}': '{c}'})],
+    efectosp=[contenedor_encima_pila({'{p}': '{c}'})],
+    efectosn=[],
+    c=ContenedoresYPallet,
+    p=Pilas
+)
+
+contenedor_sobre_persistencia = probpl.Operador(
+    nombre='contenedor_sobre_persistencia({cp},{c})',
+    precondiciones=[contenedor_sobre({'{cp}': '{c}'})],
+    efectosp=[contenedor_sobre({'{cp}': '{c}'})],
+    efectosn=[],
+    cp=ContenedoresYPallet,
+    c=Contenedores
+)
+
+
+contenedor_en_pila_persistencia = probpl.Operador(
+    nombre='contenedor_en_pila_persistencia({c},{p})',
+    precondiciones=[contenedor_en_pila({'{c}': '{p}'})],
+    efectosp=[contenedor_en_pila({'{c}': '{p}'})],
+    efectosn=[],
+    c=Contenedores,
+    p=Pilas
+)
+
+localizacion_ocupada_persistencia = probpl.Operador(
+    nombre='localizacion_ocupada_persistencia({l},{sn})',
+    precondiciones=[localizacion_ocupada({'{l}': '{sn}'})],
+    efectosp=[localizacion_ocupada({'{l}': '{sn}'})],
+    efectosn=[],
+    l=Localizaciones,
+    sn={'si', 'no'}
+)
+
+localizacion_robot_persistencia = probpl.Operador(
+    nombre='localizacion_robot_persistencia({r},{l})',
+    precondiciones=[localizacion_robot({'{r}': '{l}'})],
+    efectosp=[localizacion_robot({'{r}': '{l}'})],
+    efectosn=[],
+    r=Robots,
+    l=Localizaciones
+)
+
+robot_cargado_contenedor_persistencia = probpl.Operador(
+    nombre='robot_cargado_contenedor_persistencia({r},{c})',
+    precondiciones=[robot_cargado_contenedor({'{r}': '{c}'})],
+    efectosp=[robot_cargado_contenedor({'{r}': '{c}'})],
+    efectosn=[],
+    r=Robots,
+    c=Contenedores,
+)
+
+grua_contenedor_cogido_persistencia = probpl.Operador(
+    nombre='grua_contenedor_cogido_persistencia({g},{c})',
+    precondiciones=[grua_contenedor_cogido({'{g}': '{c}'})],
+    efectosp=[grua_contenedor_cogido({'{g}': '{c}'})],
+    efectosn=[],
+    g=Gruas,
+    c=Contenedores+['ninguno'],
+)
+
 problema_estibadores = probpl.ProblemaPlanificación(
     operadores=[desplazar_robot,
                 grua_carga_robot,
                 grua_descarga_robot,
                 poner_contenedor_en_pila,
-                coger_contenedor_pila],
+                coger_contenedor_pila,
+                contenedor_encima_pila_persistencia,
+                contenedor_sobre_persistencia,
+                contenedor_en_pila_persistencia,
+                localizacion_ocupada_persistencia,
+                localizacion_robot_persistencia,
+                robot_cargado_contenedor_persistencia,
+                grua_contenedor_cogido_persistencia],
     estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'no'}),
                                  localizacion_robot({'R1': 'L1'}),
                                  robot_cargado_contenedor({'R1': 'ninguno'}),

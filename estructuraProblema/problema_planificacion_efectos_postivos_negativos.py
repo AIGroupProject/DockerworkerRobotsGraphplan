@@ -112,30 +112,35 @@ class Estado:
 
 
 class AcciónPlanificación(probee.Acción):
-    def __init__(self, nombre='', precondiciones=None, efectos=None, coste=None):
+    def __init__(self, nombre='', precondiciones=None, efectosp=None, efectosn=None, coste=None):
         super().__init__(nombre=nombre, coste=coste)
         if precondiciones is None:
             precondiciones = []
         if not isinstance(precondiciones, list):
             precondiciones = [precondiciones]
         self.precondiciones = precondiciones
-        if efectos is None:
-            efectos = []
-        if not isinstance(efectos, list):
-            efectos = [efectos]
-        self.efectos = efectos
+        if efectosp is None:
+            efectosp = []
+        if not isinstance(efectosp, list):
+            efectosp = [efectosp]
+        self.efectosp = efectosp
+        if efectosn is None:
+            efectosn = []
+        if not isinstance(efectosn, list):
+            efectosn = [efectosn]
+        self.efectosn = efectosn
 
     def es_aplicable(self, estado):
         return all(estado.satisface(precondición)
                    for precondición in self.precondiciones)
 
-    def aplicar(self, estado):
-        nuevo_estado = copy.deepcopy(estado)
-        for efecto in self.efectos:
-            nombre = efecto.nombre
-            variable_estados = nuevo_estado.variables_estados[nombre]
-            nuevo_estado.variables_estados[nombre] = variable_estados(efecto)
-        return nuevo_estado
+    # def aplicar(self, estado):
+    #     nuevo_estado = copy.deepcopy(estado)
+    #     for efecto in self.efectos:
+    #         nombre = efecto.nombre
+    #         variable_estados = nuevo_estado.variables_estados[nombre]
+    #         nuevo_estado.variables_estados[nombre] = variable_estados(efecto)
+    #     return nuevo_estado
 
 
 class RelaciónRígida:
@@ -153,7 +158,7 @@ class RelaciónRígida:
 
 
 class Operador:
-    def __init__(self, nombre='', precondiciones=None, efectos=None, relaciones_rígidas=None,
+    def __init__(self, nombre='', precondiciones=None, efectosp=None, efectosn=None, relaciones_rígidas=None,
                  coste=None, **variables):
         self.nombre = nombre
         if precondiciones is None:
@@ -161,11 +166,16 @@ class Operador:
         if not isinstance(precondiciones, list):
             precondiciones = [precondiciones]
         self.precondiciones = precondiciones
-        if efectos is None:
-            efectos = []
-        if not isinstance(efectos, list):
-            efectos = [efectos]
-        self.efectos = efectos
+        if efectosp is None:
+            efectosp = []
+        if not isinstance(efectosp, list):
+            efectosp = [efectosp]
+        self.efectosp = efectosp
+        if efectosn is None:
+            efectosn = []
+        if not isinstance(efectosn, list):
+            efectosn = [efectosn]
+        self.efectosn = efectosn
         if relaciones_rígidas is None:
             relaciones_rígidas = []
         if not isinstance(relaciones_rígidas, list):
@@ -187,9 +197,11 @@ class Operador:
         nombre = self.nombre.format(**asignación)
         precondiciones = [self._procesar(precondición, asignación)
                           for precondición in self.precondiciones]
-        efectos = [self._procesar(efecto, asignación)
-                   for efecto in self.efectos]
-        return AcciónPlanificación(nombre, precondiciones, efectos, self.coste)
+        efectosp = [self._procesar(efectop, asignación)
+                   for efectop in self.efectosp]
+        efectosn = [self._procesar(efecton, asignación)
+                   for efecton in self.efectosn]
+        return AcciónPlanificación(nombre, precondiciones, efectosp, efectosn, self.coste)
 
     def verifica_relaciones_rígidas(self, asignación):
         return all(relación_rígida.verifica(asignación)

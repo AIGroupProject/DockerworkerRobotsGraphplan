@@ -7,7 +7,7 @@ import estructuraProblema.problema_planificación as probpl
 import util.imprimir_algoritmos as imp
 
 # Clases de símbolos de objetos
-Localizaciones = ['L1', 'L2', 'L3', 'L4']
+Localizaciones = ['L1', 'L2', 'L3']
 Robots = ['R1', 'R2']
 Gruas = ['G1', 'G2']
 Contenedores = ['C1', 'C2', 'C3', 'C4']
@@ -60,7 +60,6 @@ traceabilityMatrix = np.zeros((len(Localizaciones), len(Localizaciones)), dtype=
 # l1 adyacente l2
 traceabilityMatrix[0][1] = True
 traceabilityMatrix[0][2] = True
-traceabilityMatrix[1][3] = True
 
 matrizTrazSimet = (traceabilityMatrix + traceabilityMatrix.T)
 
@@ -69,14 +68,14 @@ adyacente = probpl.RelaciónRígida(lambda x, y:
                                   matrizTrazSimet[
                                       Localizaciones.index(x),
                                       Localizaciones.index(y)])
-radio = {'G1': ['L1','L3'], 'G2': ['L2','L4']}
+radio = {'G1': ['L1','L3'], 'G2': ['L2']}
 radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
                                      localizacion in radio[grua])
 
 contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
                                                    c1 != c2)
 
-localizacion_pila = {'L1': ['P1', 'P2'], 'L2': ['P3'], 'L3': ['P4'], 'L4': []}
+localizacion_pila = {'L1': ['P1', 'P2'], 'L2': ['P3'], 'L3': ['P4']}
 localizaciones_con_pilas = probpl.RelaciónRígida(lambda pila, localizacion:
                                                  pila in localizacion_pila[localizacion])
 
@@ -90,6 +89,10 @@ def heu1_problema_estibadores_ampliado(nodo):
     if heu['C1'] != 'P2':
         penalizacion +=1
     if heu['C2'] != 'P2':
+        penalizacion += 1
+    if heu['C3'] != 'P3':
+        penalizacion += 1
+    if heu['C4'] != 'P1':
         penalizacion += 1
     return penalizacion
 
@@ -192,7 +195,7 @@ problema_estibadores = probpl.ProblemaPlanificación(
                 grua_descarga_robot,
                 poner_contenedor_en_pila,
                 coger_contenedor_pila],
-    estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'si', 'L3': 'no', 'L4': 'no'}),
+    estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'si', 'L3': 'no'}),
                                  localizacion_robot({'R1': 'L1', 'R2': 'L2'}),
                                  robot_cargado_contenedor({'R1': 'ninguno', 'R2': 'ninguno'}),
                                  grua_contenedor_cogido({'G1': 'ninguno', 'G2': 'ninguno'}),

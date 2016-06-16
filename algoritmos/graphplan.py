@@ -10,7 +10,7 @@ class Graphplan(object):
 
     def graphPlan(self):
         niveles = []
-        nivel = GraphplanNivel(capa_acciones=None, capa_atomos=self.estado_inicial.variables_estado)
+        nivel = GraphplanNivel(capa_acciones=None, capa_atomos=list(self.estado_inicial.variables_estados.values()))
 
         i = 0
         niveles [i]=nivel

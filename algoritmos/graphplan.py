@@ -35,7 +35,7 @@ class GraphplanNivel(object):
         if capa_acciones is None:
             capa_acciones = CapaAcciones()
         if capa_atomos is None:
-            capa_atomos = CapaAcciones()
+            capa_atomos = CapaAtomos()
         self.capa_acciones = capa_acciones
         self.capa_atomos = capa_atomos
 

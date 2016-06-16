@@ -136,6 +136,8 @@ class BúsquedaGeneral:
         nodos_analizados = 0
         while True:
             nodos_analizados += 1
+            if nodos_analizados % 50 == 0:
+                print(nodos_analizados, "\n")
             if not self.frontera:
                 return None
             nodo = self.frontera.sacar()

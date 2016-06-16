@@ -4,13 +4,14 @@ import numpy as np
 
 import algoritmos.búsqueda_espacio_estados as búsqee
 import estructuraProblema.problema_planificación as probpl
+import util.imprimir_algoritmos as imp
 
 # Clases de símbolos de objetos
-Localizaciones = ['L1', 'L2', 'L3', 'L4']
-Robots = ['R1', 'R2']
+Localizaciones = ['L1', 'L2', 'L3']
+Robots = ['R1']
 Gruas = ['G1', 'G2']
-Contenedores = ['C1', 'C2', 'C3', 'C4']
-Pilas = ['P1', 'P2', 'P3', 'P4']
+Contenedores = ['C1', 'C2']
+Pilas = ['P1', 'P2', 'P3']
 ContenedoresYPallet = Contenedores + ['pallet']
 
 # Variables de estado
@@ -59,7 +60,6 @@ traceabilityMatrix = np.zeros((len(Localizaciones), len(Localizaciones)), dtype=
 # l1 adyacente l2
 traceabilityMatrix[0][1] = True
 traceabilityMatrix[0][2] = True
-traceabilityMatrix[1][3] = True
 
 matrizTrazSimet = (traceabilityMatrix + traceabilityMatrix.T)
 
@@ -68,14 +68,14 @@ adyacente = probpl.RelaciónRígida(lambda x, y:
                                   matrizTrazSimet[
                                       Localizaciones.index(x),
                                       Localizaciones.index(y)])
-radio = {'G1': ['L1','L3'], 'G2': ['L2','L4']}
+radio = {'G1': ['L1','L3'], 'G2': ['L2']}
 radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
                                      localizacion in radio[grua])
 
 contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
                                                    c1 != c2)
 
-localizacion_pila = {'L1': ['P1', 'P2'], 'L2': ['P3'], 'L3': ['P4'], 'L4': []}
+localizacion_pila = {'L1': ['P1'], 'L2': ['P2'], 'L3': ['P3']}
 localizaciones_con_pilas = probpl.RelaciónRígida(lambda pila, localizacion:
                                                  pila in localizacion_pila[localizacion])
 
@@ -191,64 +191,20 @@ problema_estibadores = probpl.ProblemaPlanificación(
                 grua_descarga_robot,
                 poner_contenedor_en_pila,
                 coger_contenedor_pila],
-    estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'si', 'L3': 'no', 'L4': 'no'}),
-                                 localizacion_robot({'R1': 'L1', 'R2': 'L2'}),
-                                 robot_cargado_contenedor({'R1': 'ninguno', 'R2': 'ninguno'}),
+    estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'no', 'L3': 'no'}),
+                                 localizacion_robot({'R1': 'L1'}),
+                                 robot_cargado_contenedor({'R1': 'ninguno'}),
                                  grua_contenedor_cogido({'G1': 'ninguno', 'G2': 'ninguno'}),
-                                 contenedor_en_pila({'C1': 'P1', 'C2': 'P1', 'C3': 'P1', 'C4':'P1'}),
-                                 contenedor_sobre({'pallet': 'C1', 'C1': 'C2', 'C2': 'C3', 'C3': 'C4','C4':'ninguno'}),
-                                 contenedor_encima_pila({'P1': 'C4', 'P2': 'pallet', 'P3': 'pallet', 'P4': 'pallet'})),
-    objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2', 'C3': 'P3', 'C4': 'P1'})
+                                 contenedor_en_pila({'C1': 'P1', 'C2': 'P1'}),
+                                 contenedor_sobre({'pallet': 'C1', 'C1': 'C2', 'C2': 'ninguno'}),
+                                 contenedor_encima_pila({'P1': 'C2', 'P2': 'pallet', 'P3': 'pallet'})),
+    objetivos=contenedor_en_pila({'C1': 'P3', 'C2': 'P3'})
 )
 
-# búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
-# busqueda_anchura = búsqee.BúsquedaEnAnchura()
-#busqueda_optima = búsqee.BúsquedaÓptima()
+busqueda_profundidad = búsqee.BúsquedaEnProfundidad()
+busqueda_anchura = búsqee.BúsquedaEnAnchura()
+busqueda_optima = búsqee.BúsquedaÓptima()
 busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor(heu1_problema_estibadores_ampliado)
-#
-# print("\n")
-# tiempo_inicial = time()
-# búsqueda_profundidad.buscar(problema_estibadores)
-# tiempo_final = time()
-# print(búsqueda_profundidad.buscar(problema_estibadores))
-# print('Tiempo del algoritmo profundidad', tiempo_final - tiempo_inicial)
-#
-# print("\n")
-# tiempo_inicial = time()
-# busqueda_anchura.buscar(problema_estibadores)
-# tiempo_final = time()
-# print(busqueda_anchura.buscar(problema_estibadores))
-# print('Tiempo del algoritmo anchura', tiempo_final - tiempo_inicial)
-#
-# print("\n")
-# tiempo_inicial = time()
-# busqueda_optima.buscar(problema_estibadores)
-# tiempo_final = time()
-# print(busqueda_optima.buscar(problema_estibadores))
-# print('Tiempo del algoritmo busqueda optima', tiempo_final - tiempo_inicial)
+#Calcula tiempos, nodos analizados e imprime solucion
 
-
-
-print("\n")
-tiempo_inicial = time()
-busqueda_primero_el_mejor.buscar(problema_estibadores)
-tiempo_final = time()
-print(busqueda_primero_el_mejor.buscar(problema_estibadores))
-print('Tiempo del algoritmo primer el mejor ', tiempo_final - tiempo_inicial)
-print("\n")
-
-# tiempo_inicial = time()
-# busqueda_primero_el_mejor.buscar(problema_estibadores)
-# tiempo_final = time()
-# print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
-#
-# print(búsqueda_profundidad.buscar(problema_estibadores))
-# print(busqueda_anchura.buscar(problema_estibadores))
-# print(busqueda_optima.buscar(problema_estibadores))
-# print(busqueda_primero_el_mejor.buscar(problema_estibadores))
-
-
-# profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
-# profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
-# profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
-# profile.run('print(busqueda_primero_el_mejor.buscar(problema_estibadores)); print')
+imp.imprimir(problema_estibadores, busqueda_profundidad, busqueda_primero_el_mejor)

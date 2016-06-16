@@ -4,6 +4,7 @@ import numpy as np
 
 import algoritmos.búsqueda_espacio_estados as búsqee
 import estructuraProblema.problema_planificación as probpl
+import util.imprimir_algoritmos as imp
 
 # Clases de símbolos de objetos
 Localizaciones = ['L1', 'L2', 'L3']
@@ -200,54 +201,10 @@ problema_estibadores = probpl.ProblemaPlanificación(
     objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2'})
 )
 
-# búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
-# busqueda_anchura = búsqee.BúsquedaEnAnchura()
-#busqueda_optima = búsqee.BúsquedaÓptima()
+busqueda_profundidad = búsqee.BúsquedaEnProfundidad()
+busqueda_anchura = búsqee.BúsquedaEnAnchura()
+busqueda_optima = búsqee.BúsquedaÓptima()
 busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor(heu1_problema_estibadores_ampliado)
-#
-# print("\n")
-# tiempo_inicial = time()
-# búsqueda_profundidad.buscar(problema_estibadores)
-# tiempo_final = time()
-# print(búsqueda_profundidad.buscar(problema_estibadores))
-# print('Tiempo del algoritmo profundidad', tiempo_final - tiempo_inicial)
-#
-# print("\n")
-# tiempo_inicial = time()
-# busqueda_anchura.buscar(problema_estibadores)
-# tiempo_final = time()
-# print(busqueda_anchura.buscar(problema_estibadores))
-# print('Tiempo del algoritmo anchura', tiempo_final - tiempo_inicial)
-#
-# print("\n")
-# tiempo_inicial = time()
-# busqueda_optima.buscar(problema_estibadores)
-# tiempo_final = time()
-# print(busqueda_optima.buscar(problema_estibadores))
-# print('Tiempo del algoritmo busqueda optima', tiempo_final - tiempo_inicial)
+#Calcula tiempos, nodos analizados e imprime solucion
 
-
-
-print("\n")
-tiempo_inicial = time()
-busqueda_primero_el_mejor.buscar(problema_estibadores)
-tiempo_final = time()
-print(busqueda_primero_el_mejor.buscar(problema_estibadores))
-print('Tiempo del algoritmo primer el mejor ', tiempo_final - tiempo_inicial)
-print("\n")
-
-# tiempo_inicial = time()
-# busqueda_primero_el_mejor.buscar(problema_estibadores)
-# tiempo_final = time()
-# print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
-#
-# print(búsqueda_profundidad.buscar(problema_estibadores))
-# print(busqueda_anchura.buscar(problema_estibadores))
-# print(busqueda_optima.buscar(problema_estibadores))
-# print(busqueda_primero_el_mejor.buscar(problema_estibadores))
-
-
-# profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
-# profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
-# profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
-# profile.run('print(busqueda_primero_el_mejor.buscar(problema_estibadores)); print')
+imp.imprimir(problema_estibadores, busqueda_profundidad, busqueda_primero_el_mejor)

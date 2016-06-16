@@ -7,6 +7,8 @@ import algoritmos.búsqueda_espacio_estados as búsqee
 import estructuraProblema.problema_planificacion_efectos_postivos_negativos as probpl
 
 # Clases de símbolos de objetos
+from algoritmos.graphplan import Graphplan
+
 Localizaciones = ['L1', 'L2']
 Robots = ['R1']
 Gruas = ['G1', 'G2']
@@ -265,6 +267,8 @@ problema_estibadores = probpl.ProblemaPlanificación(
     objetivos=contenedor_en_pila({'C1': 'P2'})
 )
 
+graphplan = Graphplan(problema_estibadores);
+graphplan.graphPlan();
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
 busqueda_anchura = búsqee.BúsquedaEnAnchura()
 busqueda_optima = búsqee.BúsquedaÓptima()

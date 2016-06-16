@@ -267,8 +267,25 @@ problema_estibadores = probpl.ProblemaPlanificación(
     objetivos=contenedor_en_pila({'C1': 'P2'})
 )
 
+
+lista = []
+lista_modificada = []
+lista_final = []
+for x in problema_estibadores.estado_inicial.variables_estados:
+    lista.append(str(problema_estibadores.estado_inicial.variables_estados[x]))
+
+for x in lista:
+    lista_modificada  += x.split("\n")
+
+print(lista_modificada)
+print(len(lista_modificada))
+
+
+
+
 graphplan = Graphplan(problema_estibadores);
 graphplan.graphPlan();
+
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
 busqueda_anchura = búsqee.BúsquedaEnAnchura()
 busqueda_optima = búsqee.BúsquedaÓptima()

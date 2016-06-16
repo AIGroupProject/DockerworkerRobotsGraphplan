@@ -133,13 +133,16 @@ class BúsquedaGeneral:
         self.frontera.vaciar()
         self.explorados.vaciar()
         self.frontera.añadir(self.Nodo(problema.estado_inicial))
+        nodos_analizados = 0
         while True:
+            nodos_analizados += 1
             if not self.frontera:
                 return None
             nodo = self.frontera.sacar()
             if self.detallado:
                 print('{0}Nodo: {1}'.format('  ' * nodo.profundidad, nodo))
             if problema.es_estado_final(nodo.estado):
+                print("Nodos Analizados: ",nodos_analizados)
                 return nodo.solución()
             self.explorados.añadir(nodo)
             if self.es_expandible(nodo):

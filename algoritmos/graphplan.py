@@ -10,17 +10,30 @@ class Graphplan(object):
 
     def graphPlan(self):
         niveles = []
+        #Creamos un nivel que contendrá acciones y atomos
         nivel = GraphplanNivel(capa_acciones=None, capa_atomos=list(self.estado_inicial.variables_estados.values()))
-
         i = 0
-        niveles [i]=nivel
+        #añadimos el nivel a niveles
+        niveles.append(nivel)
         while True:
-            if self.objetivos in P:
+            if self.objetivos in P: #sin mutex entre ellos
                 print("Objetivos iguales a las precondiciones")
             else:
                 i = i + 1
+                #Creamos la capa de acciones
+                # que tienen que cumplir las precondiciones de Pi-1
                 nivel = GraphplanNivel()
                 accionesAplicables = self.AccionesAplicables()
+
+                #Calculamos mutex sobre la capa de acciones Ai
+
+                #Creamos la capa de atomos(efectos de aplicar acciones)
+
+                #Calculamos mutex sobre la capa de atomos
+
+            # if la capa de atomos son las mismas en Pi-1 y Pi
+            # y además tienen los mismos mutex se termina el while mediante break
+        #devolver fallo porq no se ha podido encontrar una solucion
 
 
 

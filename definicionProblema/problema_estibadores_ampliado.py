@@ -9,7 +9,7 @@ import estructuraProblema.problema_planificación as probpl
 Localizaciones = ['L1', 'L2']
 Robots = ['R1']
 Gruas = ['G1', 'G2']
-Contenedores = ['C1','C2']
+Contenedores = ['C1', 'C2']
 Pilas = ['P1', 'P2', 'P3']
 ContenedoresYPallet = Contenedores + ['pallet']
 
@@ -73,9 +73,35 @@ radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
 contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
                                                    c1 != c2)
 
-localizacion_pila = {'L1': ['P1','P3'], 'L2': ['P2']}
+localizacion_pila = {'L1': ['P1', 'P3'], 'L2': ['P2']}
 localizaciones_con_pilas = probpl.RelaciónRígida(lambda pila, localizacion:
                                                  pila in localizacion_pila[localizacion])
+
+
+# HEURISTICAS
+def heu1_problema_estibadores_ampliado(nodo):
+    heu = nodo.estado.variables_estados['contenedor_en_pila({c})']
+    penalizacion = 0
+
+    # penalizamos las variables de estado que no cumplen con el objetivo
+    if heu['C1'] != 'P2':
+        penalizacion +=1
+    if heu['C2'] != 'P2':
+        penalizacion += 1
+    return penalizacion
+
+
+
+def heu2_problema_estibadores_ampliado(nodo):
+    heu = nodo.estado.variables_estados['contenedor_en_pila({c})']
+    penalizacion = 0
+
+    # penalizamos las variables de estado que no cumplen con el objetivo
+    if heu['C1'] != 'P2':
+        penalizacion += 1
+    if heu['C2'] != 'P2':
+        penalizacion += 1
+    return penalizacion
 
 # Operadores
 
@@ -170,40 +196,55 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                  contenedor_en_pila({'C1': 'P1', 'C2': 'P1'}),
                                  contenedor_sobre({'C1': 'C2', 'pallet': 'C1', 'C2': 'ninguno'}),
                                  contenedor_encima_pila({'P1': 'C2', 'P2': 'pallet', 'P3': 'pallet'})),
-    objetivos=contenedor_en_pila({'C1': 'P2','C2': 'P2'})
+    objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2'})
 )
 
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
 busqueda_anchura = búsqee.BúsquedaEnAnchura()
 busqueda_optima = búsqee.BúsquedaÓptima()
-# busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor()
+busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor(heu1_problema_estibadores_ampliado)
 
+print("\n")
 tiempo_inicial = time()
 búsqueda_profundidad.buscar(problema_estibadores)
 tiempo_final = time()
-print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+print(búsqueda_profundidad.buscar(problema_estibadores))
+print('Tiempo del algoritmo profundidad', tiempo_final - tiempo_inicial)
 
+print("\n")
 tiempo_inicial = time()
 busqueda_anchura.buscar(problema_estibadores)
 tiempo_final = time()
-print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+print(busqueda_anchura.buscar(problema_estibadores))
+print('Tiempo del algoritmo anchura', tiempo_final - tiempo_inicial)
 
+print("\n")
 tiempo_inicial = time()
 busqueda_optima.buscar(problema_estibadores)
 tiempo_final = time()
-print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+print(busqueda_optima.buscar(problema_estibadores))
+print('Tiempo del algoritmo busqueda optima', tiempo_final - tiempo_inicial)
 
+print("\n")
+tiempo_inicial = time()
+busqueda_primero_el_mejor.buscar(problema_estibadores)
+tiempo_final = time()
+print(busqueda_primero_el_mejor.buscar(problema_estibadores))
+print('Tiempo del algoritmo primer el mejor ', tiempo_final - tiempo_inicial)
+print("\n")
 
 # tiempo_inicial = time()
 # busqueda_primero_el_mejor.buscar(problema_estibadores)
 # tiempo_final = time()
 # print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+#
+# print(búsqueda_profundidad.buscar(problema_estibadores))
+# print(busqueda_anchura.buscar(problema_estibadores))
+# print(busqueda_optima.buscar(problema_estibadores))
+# print(busqueda_primero_el_mejor.buscar(problema_estibadores))
 
-print(búsqueda_profundidad.buscar(problema_estibadores))
-print(busqueda_anchura.buscar(problema_estibadores))
-print(busqueda_optima.buscar(problema_estibadores))
 
-#profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
-#profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
-#profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
-
+# profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_primero_el_mejor.buscar(problema_estibadores)); print')

@@ -49,55 +49,7 @@ def extraer_acciones(problema_estibadores):
     return lista_acciones
 
 
-    # print(lista_pre_modificada)
-    # print(len(lista_pre_modificada))
-    #
-    # print(lista_efectos_pos_modificada)
-    # print(len(lista_efectos_pos_modificada))
-    #
-    # print(lista_efectos_neg_modificada)
-    # print(len(lista_efectos_neg_modificada))
 
-
-
-
-    #
-    #
-    # ## SACA DE TODAS LAS ACCIONES LAS PRECONDICIONES QUE DESPUES SERAN ATOMOS
-    # lista_pre = []
-    # lista_pre_modificada = []
-    # for x in problema_estibadores.acciones:
-    #     for y in x.precondiciones:
-    #         lista_pre.append(str(y))
-    # for x in lista_pre:
-    #     lista_pre_modificada += x.split("\n")
-    #
-    # print(lista_pre_modificada)
-    # print(len(lista_pre_modificada))
-    #
-    # ## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
-    # lista_efectos_pos = []
-    # lista_efectos_pos_modificada = []
-    # for x in problema_estibadores.acciones:
-    #     for y in x.efectosp:
-    #         lista_efectos_pos.append(str(y))
-    # for x in lista_efectos_pos:
-    #     lista_efectos_pos_modificada += x.split("\n")
-    #
-    # print(lista_efectos_pos_modificada)
-    # print(len(lista_efectos_pos_modificada))
-    #
-    # ## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
-    # lista_efectos_neg = []
-    # lista_efectos_neg_modificada = []
-    # for x in problema_estibadores.acciones:
-    #     for y in x.efectosn:
-    #         lista_efectos_neg.append(str(y))
-    # for x in lista_efectos_neg:
-    #     lista_efectos_neg_modificada += x.split("\n")
-    #
-    # print(lista_efectos_neg_modificada)
-    # print(len(lista_efectos_neg_modificada))
 
 
 def extraer_estado_inicial (problema_estibadores):
@@ -111,8 +63,6 @@ def extraer_estado_inicial (problema_estibadores):
     for x in lista_inicial:
         lista_estado_inicial += x.split("\n")
 
-    # print(lista_estado_inicial)
-    # print(len(lista_estado_inicial))
 
     return lista_estado_inicial
 
@@ -132,7 +82,3 @@ def extraer_objetivo(problema_estibadores):
 
     return lista_obj_final
 
-
-# util.extraer_estado_inicial(problema_estibadores)
-# util.extraer_acciones(problema_estibadores)
-# util.extraer_objetivo(problema_estibadores)

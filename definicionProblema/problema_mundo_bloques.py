@@ -1,6 +1,6 @@
 import random
 
-import algoritmos.problema_planificación as probpl
+import estructuraProblema.problema_planificación as probpl
 
 import estructuraProblema.problema_planificación_HTN as probhtn
 

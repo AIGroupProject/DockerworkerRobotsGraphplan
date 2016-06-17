@@ -267,7 +267,7 @@ problema_estibadores = probpl.ProblemaPlanificación(
     objetivos=contenedor_en_pila({'C1': 'P2'})
 )
 
-
+###SACA DEL ESTADO INICIAL LOS ATOMOS
 lista = []
 lista_modificada = []
 lista_final = []
@@ -280,7 +280,43 @@ for x in lista:
 print(lista_modificada)
 print(len(lista_modificada))
 
+## SACA DE TODAS LAS ACCIONES LAS PRECONDICIONES QUE DESPUES SERAN ATOMOS
+lista_pre = []
+lista_pre_modificada = []
+for x in problema_estibadores.acciones:
+    for y in x.precondiciones:
+        lista_pre.append(str(y))
+for x in lista_pre:
+    lista_pre_modificada += x.split("\n")
 
+print(lista_pre_modificada)
+print(len(lista_pre_modificada))
+
+
+## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
+lista_efectos_pos = []
+lista_efectos_pos_modificada = []
+for x in problema_estibadores.acciones:
+    for y in x.efectosp:
+        lista_efectos_pos.append(str(y))
+for x in lista_efectos_pos:
+    lista_efectos_pos_modificada += x.split("\n")
+
+print(lista_efectos_pos_modificada)
+print(len(lista_efectos_pos_modificada))
+
+
+## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
+lista_efectos_neg = []
+lista_efectos_neg_modificada = []
+for x in problema_estibadores.acciones:
+    for y in x.efectosn:
+        lista_efectos_neg.append(str(y))
+for x in lista_efectos_neg:
+    lista_efectos_neg_modificada += x.split("\n")
+
+print(lista_efectos_neg_modificada)
+print(len(lista_efectos_neg_modificada))
 
 
 graphplan = Graphplan(problema_estibadores);

@@ -11,7 +11,7 @@ import util.imprimir_algoritmos as imp
 Localizaciones = ['L1', 'L2']
 Robots = ['R1']
 Gruas = ['G1', 'G2']
-Contenedores = ['C1', 'C2']
+Contenedores = ['C1']
 Pilas = ['P1', 'P2']
 ContenedoresYPallet = Contenedores + ['pallet']
 
@@ -88,8 +88,6 @@ def heu1_problema_estibadores_ampliado(nodo):
     # penalizamos las variables de estado que no cumplen con el objetivo
     if heu['C1'] != 'P2':
         penalizacion +=1
-    if heu['C2'] != 'P2':
-        penalizacion += 1
     return penalizacion
 
 
@@ -100,8 +98,6 @@ def heu2_problema_estibadores_ampliado(nodo):
 
     # penalizamos las variables de estado que no cumplen con el objetivo
     if heu['C1'] != 'P2':
-        penalizacion += 1
-    if heu['C2'] != 'P2':
         penalizacion += 1
     return penalizacion
 
@@ -195,10 +191,10 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                  localizacion_robot({'R1': 'L1'}),
                                  robot_cargado_contenedor({'R1': 'ninguno'}),
                                  grua_contenedor_cogido({'G1': 'ninguno', 'G2': 'ninguno'}),
-                                 contenedor_en_pila({'C1': 'P1', 'C2': 'P1'}),
-                                 contenedor_sobre({'C1': 'C2', 'pallet': 'C1', 'C2': 'ninguno'}),
-                                 contenedor_encima_pila({'P1': 'C2', 'P2': 'pallet'})),
-    objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2'})
+                                 contenedor_en_pila({'C1': 'P1'}),
+                                 contenedor_sobre({'C1': 'ninguno', 'pallet': 'C1'}),
+                                 contenedor_encima_pila({'P1': 'C1', 'P2': 'pallet'})),
+    objetivos=contenedor_en_pila({'C1': 'P2'})
 )
 
 busqueda_profundidad = búsqee.BúsquedaEnProfundidad()

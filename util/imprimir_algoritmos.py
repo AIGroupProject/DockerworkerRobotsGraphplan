@@ -5,14 +5,14 @@ from time import time  # medir tiempos
 
 def imprimir(problema_estibadores, busqueda_profundidad, busqueda_primero_el_mejor=None):
 
-    # if busqueda_profundidad is not None:
-    #     print("\n")
-    #     tiempo_inicial = time()
-    #     b_prof = busqueda_profundidad.buscar(problema_estibadores)
-    #     tiempo_final = time()
-    #     print("Longitud de la solución: ", len(b_prof))
-    #     print('Tiempo del algoritmo profundidad', tiempo_final - tiempo_inicial)
-    #     print(b_prof)
+    if busqueda_profundidad is not None:
+        print("\n")
+        tiempo_inicial = time()
+        b_prof = busqueda_profundidad.buscar(problema_estibadores)
+        tiempo_final = time()
+        print("Longitud de la solución: ", len(b_prof))
+        print('Tiempo del algoritmo profundidad', tiempo_final - tiempo_inicial)
+        print(b_prof)
 
     # if busqueda_anchura is not None:
     #     print("\n")

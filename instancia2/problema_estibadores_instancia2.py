@@ -4,6 +4,7 @@ import numpy as np
 
 import algoritmos.búsqueda_espacio_estados as búsqee
 import estructuraProblema.problema_planificación as probpl
+
 import util.imprimir_algoritmos as imp
 
 # Clases de símbolos de objetos
@@ -11,7 +12,7 @@ Localizaciones = ['L1', 'L2']
 Robots = ['R1']
 Gruas = ['G1', 'G2']
 Contenedores = ['C1', 'C2']
-Pilas = ['P1', 'P2', 'P3']
+Pilas = ['P1', 'P2']
 ContenedoresYPallet = Contenedores + ['pallet']
 
 # Variables de estado
@@ -74,7 +75,7 @@ radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
 contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
                                                    c1 != c2)
 
-localizacion_pila = {'L1': ['P1', 'P3'], 'L2': ['P2']}
+localizacion_pila = {'L1': ['P1'], 'L2': ['P2']}
 localizaciones_con_pilas = probpl.RelaciónRígida(lambda pila, localizacion:
                                                  pila in localizacion_pila[localizacion])
 
@@ -196,7 +197,7 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                  grua_contenedor_cogido({'G1': 'ninguno', 'G2': 'ninguno'}),
                                  contenedor_en_pila({'C1': 'P1', 'C2': 'P1'}),
                                  contenedor_sobre({'C1': 'C2', 'pallet': 'C1', 'C2': 'ninguno'}),
-                                 contenedor_encima_pila({'P1': 'C2', 'P2': 'pallet', 'P3': 'pallet'})),
+                                 contenedor_encima_pila({'P1': 'C2', 'P2': 'pallet'})),
     objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2'})
 )
 
@@ -207,3 +208,9 @@ busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor(heu1_problema_estiba
 
 #Calcula tiempos, nodos analizados e imprime solucion
 imp.imprimir(problema_estibadores, busqueda_profundidad, busqueda_primero_el_mejor)
+
+
+# profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_primero_el_mejor.buscar(problema_estibadores)); print')

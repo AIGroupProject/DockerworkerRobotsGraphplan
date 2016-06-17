@@ -5,12 +5,13 @@ from util.util import extraer_objetivo
 from util.accion import Accion
 
 class Graphplan(object):
-    def __init__(self, problema_planificacion):
-        self.estado_inicial = extraer_estado_inicial(problema_planificacion)
-        self.acciones = extraer_acciones(problema_planificacion)
-        self.objetivos = extraer_objetivo(problema_planificacion)
-        self.accion_persistencia = [x for x in problema_planificacion.acciones if 'persistencia' in x.nombre]
+    def __init__(self,estado_inicial,acciones,objetivos):
+        self.estado_inicial = estado_inicial
+        self.acciones = acciones
+        self.objetivos = objetivos
+        #self.accion_persistencia = [x for x in problema_planificacion.acciones if 'persistencia' in x.nombre]
         self.niveles = []
+        self.accionesMutex = self.accionesMutex()
 
     def graphPlan(self):
         self.niveles = []
@@ -34,7 +35,7 @@ class Graphplan(object):
                 capa_atomos.setAtomos(self.efectosAcciones(capa_acciones.acciones))
 
                 #Calculamos mutex sobre la capa de acciones Ai
-                capa_acciones.setAccionesMutex(self.accionesMutex(capa_acciones.acciones,self.niveles[i-1].capa_atomos))
+                capa_acciones.setAccionesMutex(self.accionesMutexAtomos(capa_acciones.acciones,self.niveles[i-1].capa_atomos))
 
                 #Creamos la capa de atomos(efectos de aplicar acciones)
                 proximoNivel = GraphplanNivel(capa_acciones,capa_atomos)
@@ -45,7 +46,7 @@ class Graphplan(object):
 
             # if la capa de atomos son las mismas en Pi-1 y Pi
 
-            if all(atomo in self.niveles[i].capa_atomos.atomos for atomo in self.objetivos):
+            if self.niveles[i]==self.niveles[i-1]:
                 return i
 
             # y además tienen los mismos mutex se termina el while mediante break
@@ -69,15 +70,26 @@ class Graphplan(object):
                     efectos.append(efec)
         return efectos
 
-    def accionesMutex(self, lista_acciones, capa_atomos):
+    def accionesMutex(self):
+        lista_acciones_mutex = []
+        for acc1 in self.acciones:
+            for acc2 in self.acciones:
+                if (acc1 != acc2) and self.esAccionMutex(acc1, acc2):
+                    lista_acciones_mutex.append(Mutex(acc1, acc2))
+        return lista_acciones_mutex
+
+    def accionesMutexAtomos(self, lista_acciones, capa_atomos):
         lista_acciones_mutex = []
         for acc1 in lista_acciones:
             for acc2 in lista_acciones:
-                if(acc1 != acc2) and self.esAccionMutex(acc1, acc2):
+                if(acc1 != acc2) and Mutex(acc1,acc2) in self.accionesMutex:
                     lista_acciones_mutex.append(Mutex(acc1,acc2))
-                else:
-                    for atomo1 in capa_atomos.atomos:
-                        for atomo2 in capa_atomos.atomos:
+                elif (acc1 != acc2):
+                    # for mutex in capa_atomos.atomosMutex:
+                    #     if (mutex.x in acc1.precondiciones and mutex.y in acc2.precondiciones) or (mutex.x in acc2.precondiciones and mutex.y in acc1.precondiciones):
+                    #         lista_acciones_mutex.append(Mutex(acc1, acc2))
+                    for atomo1 in acc1.precondiciones:
+                        for atomo2 in acc2.precondiciones:
                             if Mutex(atomo1, atomo2) in capa_atomos.atomosMutex:
                                 lista_acciones_mutex.append(Mutex(acc1, acc2))
         return lista_acciones_mutex
@@ -103,12 +115,19 @@ class Graphplan(object):
         return False
 
     def esAtomoMutex(self,atomo1,atomo2,capa_acciones):
+        acciones_productoras = []
         for acc1 in capa_acciones.acciones:
+            #Comprueba si alguna de las acciones produce a ambos atomos
             if atomo1 in acc1.efectosp and atomo2 in acc1.efectosp:
                 return False
-            for acc2 in capa_acciones.acciones:
+            #Si la acc1 produce alguno de los dos atomos
+            if atomo1 in acc1.efectosp or atomo2 in acc1.efectosp:
+                acciones_productoras.append(acc1)
+
+        for acc1 in acciones_productoras:
+            for acc2 in acciones_productoras:
                 if (acc1!=acc2) and Mutex(acc1,acc2) in capa_acciones.accionesMutex:
-                    True
+                    return True
         return False
 
 
@@ -122,6 +141,14 @@ class GraphplanNivel(object):
             capa_atomos = CapaAtomos()
         self.capa_acciones = capa_acciones
         self.capa_atomos = capa_atomos
+
+    def __ne__(self, check):
+        return not self.__eq__(check)
+
+    def __eq__(self, check):
+        if (self.capa_atomos.atomos == check.capa_atomos.atomos) and (self.capa_atomos.atomosMutex == check.capa_atomos.atomosMutex):
+            return True
+        return False
 
 
 class CapaAtomos(object):

@@ -10,7 +10,7 @@ import util.imprimir_algoritmos as imp
 Localizaciones = ['L1', 'L2', 'L3', 'L4']
 Robots = ['R1', 'R2']
 Gruas = ['G1', 'G2']
-Contenedores = ['C1', 'C2', 'C3', 'C4']
+Contenedores = ['C1', 'C2', 'C3']
 Pilas = ['P1', 'P2', 'P3', 'P4']
 ContenedoresYPallet = Contenedores + ['pallet']
 
@@ -196,10 +196,10 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                  localizacion_robot({'R1': 'L1', 'R2': 'L2'}),
                                  robot_cargado_contenedor({'R1': 'ninguno', 'R2': 'ninguno'}),
                                  grua_contenedor_cogido({'G1': 'ninguno', 'G2': 'ninguno'}),
-                                 contenedor_en_pila({'C1': 'P1', 'C2': 'P1', 'C3': 'P1', 'C4':'P1'}),
-                                 contenedor_sobre({'pallet': 'C1', 'C1': 'C2', 'C2': 'C3', 'C3': 'C4','C4':'ninguno'}),
-                                 contenedor_encima_pila({'P1': 'C4', 'P2': 'pallet', 'P3': 'pallet', 'P4': 'pallet'})),
-    objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2', 'C3': 'P3', 'C4': 'P1'})
+                                 contenedor_en_pila({'C1': 'P1', 'C2': 'P1', 'C3': 'P1'}),
+                                 contenedor_sobre({'pallet': 'C1', 'C1': 'C2', 'C2': 'C3', 'C3': 'ninguno'}),
+                                 contenedor_encima_pila({'P1': 'C3', 'P2': 'pallet', 'P3': 'pallet', 'P4': 'pallet'})),
+    objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2', 'C3': 'P3'})
 )
 
 busqueda_profundidad = búsqee.BúsquedaEnProfundidad()

@@ -5,6 +5,9 @@ import numpy as np
 
 import algoritmos.búsqueda_espacio_estados as búsqee
 import estructuraProblema.problema_planificacion_efectos_postivos_negativos as probpl
+from util.util import extraer_estado_inicial
+from util.util import extraer_acciones
+from util.util import extraer_objetivo
 
 # Clases de símbolos de objetos
 from algoritmos.graphplan import Graphplan
@@ -269,93 +272,100 @@ problema_estibadores = probpl.ProblemaPlanificación(
 
 
 ####GRAPHPLAN
-graphplan = Graphplan(problema_estibadores);
-int = graphplan.graphPlan();
+
+estado_inicial = extraer_estado_inicial(problema_estibadores)
+acciones = extraer_acciones(problema_estibadores)
+objetivos = extraer_objetivo(problema_estibadores)
+
+graphplan = Graphplan(estado_inicial,acciones,objetivos)
+hGraphplan = graphplan.graphPlan()
+print(hGraphplan)
+
 
 ###SACA DEL ESTADO INICIAL LOS ATOMOS
 lista = []
-lista_modificada = []
-lista_final = []
-for x in problema_estibadores.estado_inicial.variables_estados:
-    lista.append(str(problema_estibadores.estado_inicial.variables_estados[x]))
-
-for x in lista:
-    lista_modificada  += x.split("\n")
-
-print(lista_modificada)
-print(len(lista_modificada))
-
-## SACA DE TODAS LAS ACCIONES LAS PRECONDICIONES QUE DESPUES SERAN ATOMOS
-lista_pre = []
-lista_pre_modificada = []
-for x in problema_estibadores.acciones:
-    for y in x.precondiciones:
-        lista_pre.append(str(y))
-for x in lista_pre:
-    lista_pre_modificada += x.split("\n")
-
-print(lista_pre_modificada)
-print(len(lista_pre_modificada))
-
-
-## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
-lista_efectos_pos = []
-lista_efectos_pos_modificada = []
-for x in problema_estibadores.acciones:
-    for y in x.efectosp:
-        lista_efectos_pos.append(str(y))
-for x in lista_efectos_pos:
-    lista_efectos_pos_modificada += x.split("\n")
-
-print(lista_efectos_pos_modificada)
-print(len(lista_efectos_pos_modificada))
-
-
-## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
-lista_efectos_neg = []
-lista_efectos_neg_modificada = []
-for x in problema_estibadores.acciones:
-    for y in x.efectosn:
-        lista_efectos_neg.append(str(y))
-for x in lista_efectos_neg:
-    lista_efectos_neg_modificada += x.split("\n")
-
-print(lista_efectos_neg_modificada)
-print(len(lista_efectos_neg_modificada))
-
-
-
-búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
-busqueda_anchura = búsqee.BúsquedaEnAnchura()
-busqueda_optima = búsqee.BúsquedaÓptima()
-# busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor()
-
-tiempo_inicial = time()
-búsqueda_profundidad.buscar(problema_estibadores)
-tiempo_final = time()
-print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
-
-tiempo_inicial = time()
-busqueda_anchura.buscar(problema_estibadores)
-tiempo_final = time()
-print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
-
-tiempo_inicial = time()
-busqueda_optima.buscar(problema_estibadores)
-tiempo_final = time()
-print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
-
-
+# lista_modificada = []
+# lista_final = []
+# for x in problema_estibadores.estado_inicial.variables_estados:
+#     lista.append(str(problema_estibadores.estado_inicial.variables_estados[x]))
+#
+# for x in lista:
+#     lista_modificada  += x.split("\n")
+#
+# print(lista_modificada)
+# print(len(lista_modificada))
+#
+# ## SACA DE TODAS LAS ACCIONES LAS PRECONDICIONES QUE DESPUES SERAN ATOMOS
+# lista_pre = []
+# lista_pre_modificada = []
+# for x in problema_estibadores.acciones:
+#     for y in x.precondiciones:
+#         lista_pre.append(str(y))
+# for x in lista_pre:
+#     lista_pre_modificada += x.split("\n")
+#
+# print(lista_pre_modificada)
+# print(len(lista_pre_modificada))
+#
+#
+# ## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
+# lista_efectos_pos = []
+# lista_efectos_pos_modificada = []
+# for x in problema_estibadores.acciones:
+#     for y in x.efectosp:
+#         lista_efectos_pos.append(str(y))
+# for x in lista_efectos_pos:
+#     lista_efectos_pos_modificada += x.split("\n")
+#
+# print(lista_efectos_pos_modificada)
+# print(len(lista_efectos_pos_modificada))
+#
+#
+# ## SACA DE TODAS LAS ACCIONES LOS EFECTOS POSITIVOS QUE DESPUES SERAN ATOMOS
+# lista_efectos_neg = []
+# lista_efectos_neg_modificada = []
+# for x in problema_estibadores.acciones:
+#     for y in x.efectosn:
+#         lista_efectos_neg.append(str(y))
+# for x in lista_efectos_neg:
+#     lista_efectos_neg_modificada += x.split("\n")
+#
+# print(lista_efectos_neg_modificada)
+# print(len(lista_efectos_neg_modificada))
+#
+#
+#
+# búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
+# busqueda_anchura = búsqee.BúsquedaEnAnchura()
+# busqueda_optima = búsqee.BúsquedaÓptima()
+# # busqueda_primero_el_mejor = búsqee.BúsquedaPrimeroElMejor()
+#
 # tiempo_inicial = time()
-# busqueda_primero_el_mejor.buscar(problema_estibadores)
+# búsqueda_profundidad.buscar(problema_estibadores)
 # tiempo_final = time()
 # print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
-
-print(búsqueda_profundidad.buscar(problema_estibadores))
-print(busqueda_anchura.buscar(problema_estibadores))
-print(busqueda_optima.buscar(problema_estibadores))
-
-profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
-profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
-profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
-
+#
+# tiempo_inicial = time()
+# busqueda_anchura.buscar(problema_estibadores)
+# tiempo_final = time()
+# print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+#
+# tiempo_inicial = time()
+# busqueda_optima.buscar(problema_estibadores)
+# tiempo_final = time()
+# print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+#
+#
+# # tiempo_inicial = time()
+# # busqueda_primero_el_mejor.buscar(problema_estibadores)
+# # tiempo_final = time()
+# # print('Tiempo del algoritmo', tiempo_final-tiempo_inicial)
+#
+# print(búsqueda_profundidad.buscar(problema_estibadores))
+# print(busqueda_anchura.buscar(problema_estibadores))
+# print(busqueda_optima.buscar(problema_estibadores))
+#
+# profile.run('print(búsqueda_profundidad.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_anchura.buscar(problema_estibadores)); print')
+# profile.run('print(busqueda_optima.buscar(problema_estibadores)); print')
+#

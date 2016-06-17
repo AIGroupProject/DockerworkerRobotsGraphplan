@@ -8,9 +8,9 @@ import util.imprimir_algoritmos as imp
 
 # Clases de símbolos de objetos
 Localizaciones = ['L1', 'L2', 'L3']
-Robots = ['R1', 'R2']
+Robots = ['R1']
 Gruas = ['G1', 'G2']
-Contenedores = ['C1', 'C2', 'C3']
+Contenedores = ['C1', 'C2']
 Pilas = ['P1', 'P2', 'P3']
 ContenedoresYPallet = Contenedores + ['pallet']
 
@@ -75,7 +75,7 @@ radio_accion = probpl.RelaciónRígida(lambda grua, localizacion:
 contenedor_encima_si_mismo = probpl.RelaciónRígida(lambda c1, c2:
                                                    c1 != c2)
 
-localizacion_pila = {'L1': ['P1', 'P2'], 'L2': ['P3'], 'L3': []}
+localizacion_pila = {'L1': ['P1'], 'L2': ['P2'], 'L3': ['P3']}
 localizaciones_con_pilas = probpl.RelaciónRígida(lambda pila, localizacion:
                                                  pila in localizacion_pila[localizacion])
 
@@ -191,14 +191,14 @@ problema_estibadores = probpl.ProblemaPlanificación(
                 grua_descarga_robot,
                 poner_contenedor_en_pila,
                 coger_contenedor_pila],
-    estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'si', 'L3': 'no'}),
-                                 localizacion_robot({'R1': 'L1', 'R2': 'L2'}),
-                                 robot_cargado_contenedor({'R1': 'ninguno', 'R2': 'ninguno'}),
+    estado_inicial=probpl.Estado(localizacion_ocupada({'L1': 'si', 'L2': 'no', 'L3': 'no'}),
+                                 localizacion_robot({'R1': 'L1'}),
+                                 robot_cargado_contenedor({'R1': 'ninguno'}),
                                  grua_contenedor_cogido({'G1': 'ninguno', 'G2': 'ninguno'}),
-                                 contenedor_en_pila({'C1': 'P1', 'C2': 'P1', 'C3': 'P1'}),
-                                 contenedor_sobre({'pallet': 'C1', 'C1': 'C2', 'C2': 'C3', 'C3': 'ninguno'}),
-                                 contenedor_encima_pila({'P1': 'C3', 'P2': 'pallet', 'P3': 'pallet'})),
-    objetivos=contenedor_en_pila({'C1': 'P2', 'C2': 'P2'})
+                                 contenedor_en_pila({'C1': 'P1', 'C2': 'P1'}),
+                                 contenedor_sobre({'pallet': 'C1', 'C1': 'C2', 'C2': 'ninguno'}),
+                                 contenedor_encima_pila({'P1': 'C2', 'P2': 'pallet', 'P3': 'pallet'})),
+    objetivos=contenedor_en_pila({'C1': 'P3', 'C2': 'P3'})
 )
 
 busqueda_profundidad = búsqee.BúsquedaEnProfundidad()

@@ -1,7 +1,5 @@
 import random
-
 import estructuraProblema.problema_planificación as probpl
-
 import estructuraProblema.problema_planificación_HTN as probhtn
 
 # Clases de símbolos de objetos
@@ -9,12 +7,11 @@ Bloques = ['A', 'B', 'C']
 
 
 # Variables de estados
-posición = probpl.VariableDeEstados(nombre='posición({b},{bmb})',
-                                    b=Bloques,bmb=Bloques+['mesa','brazo'])
-bloque_encima = probpl.VariableDeEstados(nombre='bloque_encima({b},{bn})',
-                                         b=Bloques,bn=Bloques+['ninguno'])
-bloque_cogido = probpl.VariableDeEstados(nombre='bloque_cogido({bn})',
-                                         bn=Bloques+['ninguno'])
+posición = probpl.VariableDeEstados(nombre='posición({b})',
+                                    b=Bloques)
+bloque_encima = probpl.VariableDeEstados(nombre='bloque_encima({b})',
+                                         b=Bloques)
+bloque_cogido = probpl.VariableDeEstados(nombre='bloque_cogido')
 
 
 # Relaciones rígidas
@@ -23,14 +20,13 @@ bloques_distintos = probpl.RelaciónRígida(lambda b1, b2: b1 != b2)
 
 # Operadores
 coger_bloque_mesa = probpl.Operador(
-    nombre='coger_bloque_mesa({b},{bmb})',
-    precondiciones=[bloque_cogido({'ninguno': 'si'}),
-                    posición({'{b},{bmb}': 'si'}),
-                    bloque_encima({'{b},ninguno': 'si'})],
-    efectos=[bloque_cogido({'{b}': 'si'}),
-             posición({'{b},brazo': 'si'})],
-    b=Bloques,
-    bmb=Bloques+['mesa','brazo']
+    nombre='coger_bloque_mesa({b})',
+    precondiciones=[bloque_cogido('ninguno'),
+                    posición({'{b}': 'mesa'}),
+                    bloque_encima({'{b}': 'ninguno'})],
+    efectos=[bloque_cogido('{b}'),
+             posición({'{b}': 'brazo'})],
+    b=Bloques
 )
 poner_bloque_mesa = probpl.Operador(
     nombre='poner_bloque_mesa({b})',
@@ -196,10 +192,9 @@ problema_mundo_bloques_HTN = probhtn.ProblemaPlanificaciónHTN(
                                  bloque_cogido('ninguno')),
     tareas=['colocar(C, mesa)', 'colocar(B, C)', 'colocar(A, B)']
 )
+p1 = probhtn.DescomposiciónHaciaAdelante()
 
-busqueda = probhtn.DescomposiciónHaciaAdelante();
-
-print(busqueda.buscar(problema_mundo_bloques_HTN))
+print(p1.buscar(problema_mundo_bloques_HTN))
 
 
 # Generador aleatorio de instancias del problema

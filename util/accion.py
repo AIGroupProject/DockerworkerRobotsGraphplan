@@ -35,4 +35,7 @@ class Accion(object):
     #     #         return False
     #     # return True
     def es_aplicable(self,lista):
-        return all(pred in lista for pred in  self.precondiciones)
+        for pre in self.precondiciones:
+            if pre not in lista:
+                return False
+        return True

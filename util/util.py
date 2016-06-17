@@ -133,6 +133,6 @@ def extraer_objetivo(problema_estibadores):
     return lista_obj_final
 
 
-util.extraer_estado_inicial(problema_estibadores)
-util.extraer_acciones(problema_estibadores)
-util.extraer_objetivo(problema_estibadores)
+# util.extraer_estado_inicial(problema_estibadores)
+# util.extraer_acciones(problema_estibadores)
+# util.extraer_objetivo(problema_estibadores)

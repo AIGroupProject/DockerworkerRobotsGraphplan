@@ -1,23 +1,27 @@
 from util.mutex import Mutex
-
+from util.util import extraer_estado_inicial
+from util.util import extraer_acciones
+from util.util import extraer_objetivo
 
 class Graphplan(object):
     def __init__(self, problema_planificacion):
-        self.estado_inicial = problema_planificacion.estado_inicial
-        self.acciones = problema_planificacion.acciones
-        self.objetivos = problema_planificacion.objetivos
-        self.accion_persistencia = [x for x in self.acciones if 'persistencia' in x.nombre]
+        self.estado_inicial = extraer_estado_inicial(problema_planificacion)
+        self.acciones = extraer_acciones(problema_planificacion)
+        self.objetivos = extraer_objetivo(problema_planificacion)
+        self.accion_persistencia = [x for x in problema_planificacion.acciones if 'persistencia' in x.nombre]
         self.niveles = []
 
     def graphPlan(self):
         self.niveles = []
         #Creamos un nivel que contendrá acciones y atomos
-        nivel = GraphplanNivel(capa_acciones=None, capa_atomos=list(self.estado_inicial.variables_estados.values()))
+        capa_atomosa = CapaAtomos()
+        capa_atomosa.setAtomos(self.estado_inicial)
+        nivel = GraphplanNivel(capa_acciones=None, capa_atomos=capa_atomosa)
         i = 0
         #añadimos el nivel a niveles
         self.niveles.append(nivel)
         while True:
-            if self.objetivos in P: #sin mutex entre ellos
+            if self.objetivos in self.niveles[i].capa_atomos.atomos: #sin mutex entre ellos
                 print("Objetivos iguales a las precondiciones")
             else:
                 i = i + 1
@@ -25,8 +29,8 @@ class Graphplan(object):
                 # que tienen que cumplir las precondiciones de Pi-1
                 capa_acciones = CapaAcciones()
                 capa_atomos = CapaAtomos()
-                capa_acciones.setAcciones(self.accionesAplicables(niveles[i-1]))
-                capa_atomos.setAtomos(self.efectosAciones(capa_acciones.acciones))
+                capa_acciones.setAcciones(self.accionesAplicables(self.niveles[i-1]))
+                capa_atomos.setAtomos(self.efectosAcciones(capa_acciones.acciones))
 
                 #Calculamos mutex sobre la capa de acciones Ai
 
@@ -36,6 +40,9 @@ class Graphplan(object):
                 self.niveles.append(GraphplanNivel(capa_acciones,capa_atomos))
 
             # if la capa de atomos son las mismas en Pi-1 y Pi
+
+                for atomo in self.objetivos:
+                    if
             # y además tienen los mismos mutex se termina el while mediante break
         #devolver fallo porq no se ha podido encontrar una solucion
 
@@ -43,14 +50,18 @@ class Graphplan(object):
 
     #metodo que dado un nivel devuelve la lista de acciones aplicables a ese nivel
     def accionesAplicables(self, nivelanterior):
-        return [a for a in self.acciones if a.es_aplicable(nivelanterior.capa_atomos)]
+        list = []
+        for a in self.acciones:
+            if a.es_aplicable(nivelanterior.capa_atomos.atomos):
+                list.append(a)
+        return list
 
-    def efectosAciones(self, acciones):
+    def efectosAcciones(self, acciones):
         efectos =[]
         for a in acciones:
-            for pre in a.precondiciones:
-                if pre not in efectos:
-                    efectos.append(pre)
+            for efec in a.efectosp:
+                if efec not in efectos:
+                    efectos.append(efec)
         return efectos
 
 

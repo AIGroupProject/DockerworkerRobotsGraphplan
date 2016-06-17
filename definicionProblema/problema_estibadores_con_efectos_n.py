@@ -190,12 +190,12 @@ contenedor_encima_pila_persistencia = probpl.Operador(
 )
 
 contenedor_sobre_persistencia = probpl.Operador(
-    nombre='contenedor_sobre_persistencia({cp},{c})',
-    precondiciones=[contenedor_sobre({'{cp}': '{c}'})],
-    efectosp=[contenedor_sobre({'{cp}': '{c}'})],
+    nombre='contenedor_sobre_persistencia({cp},{cn})',
+    precondiciones=[contenedor_sobre({'{cp}': '{cn}'})],
+    efectosp=[contenedor_sobre({'{cp}': '{cn}'})],
     efectosn=[],
     cp=ContenedoresYPallet,
-    c=Contenedores
+    cn=Contenedores+['ninguno']
 )
 
 
@@ -205,7 +205,7 @@ contenedor_en_pila_persistencia = probpl.Operador(
     efectosp=[contenedor_en_pila({'{c}': '{p}'})],
     efectosn=[],
     c=Contenedores,
-    p=Pilas
+    p=Pilas+['ninguno']
 )
 
 localizacion_ocupada_persistencia = probpl.Operador(
@@ -232,7 +232,7 @@ robot_cargado_contenedor_persistencia = probpl.Operador(
     efectosp=[robot_cargado_contenedor({'{r}': '{c}'})],
     efectosn=[],
     r=Robots,
-    c=Contenedores,
+    c=Contenedores+['ninguno']
 )
 
 grua_contenedor_cogido_persistencia = probpl.Operador(
@@ -241,7 +241,7 @@ grua_contenedor_cogido_persistencia = probpl.Operador(
     efectosp=[grua_contenedor_cogido({'{g}': '{c}'})],
     efectosn=[],
     g=Gruas,
-    c=Contenedores+['ninguno'],
+    c=Contenedores+['ninguno']
 )
 
 problema_estibadores = probpl.ProblemaPlanificación(
@@ -266,6 +266,11 @@ problema_estibadores = probpl.ProblemaPlanificación(
                                  contenedor_encima_pila({'P1': 'C1', 'P2': 'pallet'})),
     objetivos=contenedor_en_pila({'C1': 'P2'})
 )
+
+
+####GRAPHPLAN
+graphplan = Graphplan(problema_estibadores);
+graphplan.graphPlan();
 
 ###SACA DEL ESTADO INICIAL LOS ATOMOS
 lista = []
@@ -319,8 +324,6 @@ print(lista_efectos_neg_modificada)
 print(len(lista_efectos_neg_modificada))
 
 
-graphplan = Graphplan(problema_estibadores);
-graphplan.graphPlan();
 
 búsqueda_profundidad = búsqee.BúsquedaEnProfundidad()
 busqueda_anchura = búsqee.BúsquedaEnAnchura()

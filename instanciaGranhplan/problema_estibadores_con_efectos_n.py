@@ -270,7 +270,7 @@ problema_estibadores = probpl.ProblemaPlanificación(
 
 ####GRAPHPLAN
 graphplan = Graphplan(problema_estibadores);
-graphplan.graphPlan();
+int = graphplan.graphPlan();
 
 ###SACA DEL ESTADO INICIAL LOS ATOMOS
 lista = []

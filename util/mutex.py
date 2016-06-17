@@ -13,4 +13,7 @@ class Mutex(object):
             return True
         return False
 
+    def __str__(self):
+        return "Mutex("+self.x.nombre+", "+self.y.nombre+")"
+
 

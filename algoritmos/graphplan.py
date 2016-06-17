@@ -2,6 +2,7 @@ from util.mutex import Mutex
 from util.util import extraer_estado_inicial
 from util.util import extraer_acciones
 from util.util import extraer_objetivo
+from util.accion import Accion
 
 class Graphplan(object):
     def __init__(self, problema_planificacion):
@@ -33,16 +34,20 @@ class Graphplan(object):
                 capa_atomos.setAtomos(self.efectosAcciones(capa_acciones.acciones))
 
                 #Calculamos mutex sobre la capa de acciones Ai
+                capa_acciones.setAccionesMutex(self.accionesMutex(capa_acciones.acciones,self.niveles[i-1].capa_atomos))
 
                 #Creamos la capa de atomos(efectos de aplicar acciones)
-
+                proximoNivel = GraphplanNivel(capa_acciones,capa_atomos)
                 #Calculamos mutex sobre la capa de atomos
-                self.niveles.append(GraphplanNivel(capa_acciones,capa_atomos))
+                capa_atomos.setAtomosMutex(self.esAtomosMutex(proximoNivel))
+
+                self.niveles.append(proximoNivel)
 
             # if la capa de atomos son las mismas en Pi-1 y Pi
 
-                for atomo in self.objetivos:
-                    if
+            if all(atomo in self.niveles[i].capa_atomos.atomos for atomo in self.objetivos):
+                return i
+
             # y además tienen los mismos mutex se termina el while mediante break
         #devolver fallo porq no se ha podido encontrar una solucion
 
@@ -63,6 +68,49 @@ class Graphplan(object):
                 if efec not in efectos:
                     efectos.append(efec)
         return efectos
+
+    def accionesMutex(self, lista_acciones, capa_atomos):
+        lista_acciones_mutex = []
+        for acc1 in lista_acciones:
+            for acc2 in lista_acciones:
+                if(acc1 != acc2) and self.esAccionMutex(acc1, acc2):
+                    lista_acciones_mutex.append(Mutex(acc1,acc2))
+                else:
+                    for atomo1 in capa_atomos.atomos:
+                        for atomo2 in capa_atomos.atomos:
+                            if Mutex(atomo1, atomo2) in capa_atomos.atomosMutex:
+                                lista_acciones_mutex.append(Mutex(acc1, acc2))
+        return lista_acciones_mutex
+
+    def esAtomosMutex(self,nivel):
+        lista_atomos_mutex = []
+        for atomo1 in nivel.capa_atomos.atomos:
+            for atomo2 in nivel.capa_atomos.atomos:
+                if (atomo1!=atomo2) and self.esAtomoMutex(atomo1,atomo2,nivel.capa_acciones):
+                    lista_atomos_mutex.append(Mutex(atomo1,atomo2))
+        return lista_atomos_mutex
+
+
+
+
+    def esAccionMutex(self,acc1,acc2):
+        for efectn in acc1.efectosn:
+            if efectn in acc2.precondiciones or efectn in acc2.efectosp:
+                return True
+        for efectn in acc2.efectosn:
+            if efectn in acc1.precondiciones or efectn in acc1.efectosp:
+                return True
+        return False
+
+    def esAtomoMutex(self,atomo1,atomo2,capa_acciones):
+        for acc1 in capa_acciones.acciones:
+            if atomo1 in acc1.efectosp and atomo2 in acc1.efectosp:
+                return False
+            for acc2 in capa_acciones.acciones:
+                if (acc1!=acc2) and Mutex(acc1,acc2) in capa_acciones.accionesMutex:
+                    True
+        return False
+
 
 
 
@@ -101,7 +149,7 @@ class CapaAcciones(object):
     def setAcciones(self, acciones):
         self.acciones = acciones
 
-    def serAccionesMutex(self,acciones_mutex):
+    def setAccionesMutex(self,acciones_mutex):
         self.accionesMutex = acciones_mutex
 
     def añadirAccion(self, accion):

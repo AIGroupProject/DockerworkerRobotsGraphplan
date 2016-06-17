@@ -39,3 +39,14 @@ class Accion(object):
             if pre not in lista:
                 return False
         return True
+
+    def __str__(self):
+        return self.nombre
+
+    def __ne__(self, check):
+        return not self.__eq__(check)
+
+    def __eq__(self, check):
+        if (self.nombre == check.nombre):
+            return True
+        return False

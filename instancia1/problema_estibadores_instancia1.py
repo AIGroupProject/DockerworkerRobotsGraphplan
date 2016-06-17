@@ -101,6 +101,8 @@ def heu2_problema_estibadores_ampliado(nodo):
         penalizacion += 1
     return penalizacion
 
+
+
 # Operadores
 
 desplazar_robot = probpl.Operador(

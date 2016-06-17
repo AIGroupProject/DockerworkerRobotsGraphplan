@@ -7,14 +7,15 @@ class Graphplan(object):
         self.acciones = problema_planificacion.acciones
         self.objetivos = problema_planificacion.objetivos
         self.accion_persistencia = [x for x in self.acciones if 'persistencia' in x.nombre]
+        self.niveles = []
 
     def graphPlan(self):
-        niveles = []
+        self.niveles = []
         #Creamos un nivel que contendrá acciones y atomos
         nivel = GraphplanNivel(capa_acciones=None, capa_atomos=list(self.estado_inicial.variables_estados.values()))
         i = 0
         #añadimos el nivel a niveles
-        niveles.append(nivel)
+        self.niveles.append(nivel)
         while True:
             if self.objetivos in P: #sin mutex entre ellos
                 print("Objetivos iguales a las precondiciones")
@@ -22,14 +23,17 @@ class Graphplan(object):
                 i = i + 1
                 #Creamos la capa de acciones
                 # que tienen que cumplir las precondiciones de Pi-1
-                nivel = GraphplanNivel()
-                accionesAplicables = self.AccionesAplicables()
+                capa_acciones = CapaAcciones()
+                capa_atomos = CapaAtomos()
+                capa_acciones.setAcciones(self.accionesAplicables(niveles[i-1]))
+                capa_atomos.setAtomos(self.efectosAciones(capa_acciones.acciones))
 
                 #Calculamos mutex sobre la capa de acciones Ai
 
                 #Creamos la capa de atomos(efectos de aplicar acciones)
 
                 #Calculamos mutex sobre la capa de atomos
+                self.niveles.append(GraphplanNivel(capa_acciones,capa_atomos))
 
             # if la capa de atomos son las mismas en Pi-1 y Pi
             # y además tienen los mismos mutex se termina el while mediante break
@@ -38,8 +42,16 @@ class Graphplan(object):
 
 
     #metodo que dado un nivel devuelve la lista de acciones aplicables a ese nivel
-    def AccionesAplicables(self, nivelanterior):
+    def accionesAplicables(self, nivelanterior):
         return [a for a in self.acciones if a.es_aplicable(nivelanterior.capa_atomos)]
+
+    def efectosAciones(self, acciones):
+        efectos =[]
+        for a in acciones:
+            for pre in a.precondiciones:
+                if pre not in efectos:
+                    efectos.append(pre)
+        return efectos
 
 
 
@@ -74,6 +86,12 @@ class CapaAcciones(object):
     def __init__(self,):
         self.acciones = []
         self.accionesMutex = []
+
+    def setAcciones(self, acciones):
+        self.acciones = acciones
+
+    def serAccionesMutex(self,acciones_mutex):
+        self.accionesMutex = acciones_mutex
 
     def añadirAccion(self, accion):
         self.acciones.append(accion)

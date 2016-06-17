@@ -4,7 +4,7 @@ class Atomo(object):
         self.generadoras = [] #listas de acciones que generan este atomo
 
     def getName(self):
-        return self.name
+        return self.nombre
 
     def getGeneradoras(self):
         return self.generadoras
@@ -14,7 +14,10 @@ class Atomo(object):
 
     def __eq__(self, other):
         return (isinstance(other, self.__class__)
-                and self.__dict__ == other.__dict__)
+                and (self.__dict__ == other.__dict__)
 
     def __ne__(self, other):
         return not self.__eq__(other)
+
+
+

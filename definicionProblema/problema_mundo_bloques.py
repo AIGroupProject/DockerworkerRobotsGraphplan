@@ -9,11 +9,12 @@ Bloques = ['A', 'B', 'C']
 
 
 # Variables de estados
-posición = probpl.VariableDeEstados(nombre='posición({b})',
-                                    b=Bloques)
-bloque_encima = probpl.VariableDeEstados(nombre='bloque_encima({b})',
-                                         b=Bloques)
-bloque_cogido = probpl.VariableDeEstados(nombre='bloque_cogido')
+posición = probpl.VariableDeEstados(nombre='posición({b},{bmb})',
+                                    b=Bloques,bmb=Bloques+['mesa','brazo'])
+bloque_encima = probpl.VariableDeEstados(nombre='bloque_encima({b},{bn})',
+                                         b=Bloques,bn=Bloques+['ninguno'])
+bloque_cogido = probpl.VariableDeEstados(nombre='bloque_cogido({bn})',
+                                         bn=Bloques+['ninguno'])
 
 
 # Relaciones rígidas
@@ -22,13 +23,14 @@ bloques_distintos = probpl.RelaciónRígida(lambda b1, b2: b1 != b2)
 
 # Operadores
 coger_bloque_mesa = probpl.Operador(
-    nombre='coger_bloque_mesa({b})',
-    precondiciones=[bloque_cogido('ninguno'),
-                    posición({'{b}': 'mesa'}),
-                    bloque_encima({'{b}': 'ninguno'})],
-    efectos=[bloque_cogido('{b}'),
-             posición({'{b}': 'brazo'})],
-    b=Bloques
+    nombre='coger_bloque_mesa({b},{bmb})',
+    precondiciones=[bloque_cogido({'ninguno': 'si'}),
+                    posición({'{b},{bmb}': 'si'}),
+                    bloque_encima({'{b},ninguno': 'si'})],
+    efectos=[bloque_cogido({'{b}': 'si'}),
+             posición({'{b},brazo': 'si'})],
+    b=Bloques,
+    bmb=Bloques+['mesa','brazo']
 )
 poner_bloque_mesa = probpl.Operador(
     nombre='poner_bloque_mesa({b})',

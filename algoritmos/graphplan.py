@@ -23,8 +23,9 @@ class Graphplan(object):
         #añadimos el nivel a niveles
         self.niveles.append(nivel)
         while True:
-            if self.objetivos in self.niveles[i].capa_atomos.atomos: #sin mutex entre ellos
+            if all([objetivo in self.niveles[i].capa_atomos.atomos for objetivo in self.objetivos]): #sin mutex entre ellos
                 print("Objetivos iguales a las precondiciones")
+                return i
             else:
                 i = i + 1
                 #Creamos la capa de acciones

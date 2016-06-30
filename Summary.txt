@@ -140,3 +140,5 @@ Operadores
             contenedor_codigo(r) == c
             localizacion_contenedor(c) == l
 [2 5 5 5 ; 5 6 5 8]
+
+
